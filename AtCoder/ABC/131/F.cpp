@@ -42,34 +42,44 @@ constexpr double EPS = 1e-10;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
+const int V = 100000;
+vector<vector<int>> G(2*V);
+vector<ll> cnt(2);
+vector<bool> visited(2*V);
+
+void dfs(int cv){
+    visited[cv] = true;
+    cnt[cv/V]++;
+    
+    for(auto nv : G[cv]){
+        if(visited[nv]) continue;
+        dfs(nv);
+    }
+
+    return ;
+}
+
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n, m, p; cin>>n>>m>>p;
-    vector<vector<P>> G(n);
-    for(int i=0; i<m; i++){
-        int a, b, c; cin>>a>>b>>c;
-        a--, b--;
-        G[a].emplace_back(b, p - c);
+    int n; cin>>n;
+    for(int i=0; i<n; i++){
+        int x, y; cin>>x>>y;
+        x--, y--;
+        y += V;
+        G[x].emplace_back(y);
+        G[y].emplace_back(x);
     }
 
-    vector<ll> dist(n, INF);
-    dist[0] = 0;
-    for(int i=0; i<2*n; i++){
-        for(int j=0; j<n; j++){
-            for(auto nxt : G[j]){
-                int nv, cost;
-                tie(nv, cost) = nxt;
-
-                if(dist[j] != INF && dist[nv] > dist[j] + cost){
-                    dist[nv] = dist[j] + cost;
-                    if(i >= n) dist[nv] = -INF;
-                }
-            }
-        }
+    ll ans = 0;
+    for(int i=0; i<V*2; i++){
+        if(visited[i]) continue;
+        cnt[0] = cnt[1] = 0LL;
+        dfs(i);
+        ans += cnt[0] * cnt[1];
     }
 
-    if(dist[n-1] == -INF) cout << -1 << endl;
-    else cout << max(0LL, -dist[n-1]) << endl;
+    ans -= n;
+    cout << ans << endl;
 }

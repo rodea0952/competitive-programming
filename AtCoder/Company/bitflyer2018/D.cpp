@@ -46,33 +46,48 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n; cin>>n;
-    vector<int> a(n), b(n);
-    for(int i=0; i<n; i++) cin>>a[i]>>b[i];
+    int h, w, n, m; cin>>h>>w>>n>>m;
 
-    set<int> divisor;
-    for(int i=1; i*i<=a[0]; i++){
-        if(a[0] % i == 0){
-            divisor.emplace(i);
-            divisor.emplace(a[0] / i);
+    vector<vector<int>> sum(2*n+10, vector<int>(2*m+10, 0));
+    for(int i=0; i<n; i++){
+        for(int j=0; j<m; j++){
+            char c; cin>>c;
+            if(c == '#'){
+                int si = i;
+                int sj = j;
+                int ti = min(2*n+1, h) - n + i + 1;
+                int tj = min(2*m+1, w) - m + j + 1;
+
+                sum[si][sj]++;
+                sum[ti][sj]--;
+                sum[si][tj]--;
+                sum[ti][tj]++;
+            }
         }
     }
-    
-    for(int i=1; i*i<=b[0]; i++){
-        if(b[0] % i == 0){
-            divisor.emplace(i);
-            divisor.emplace(b[0] / i);
+
+    for(int i=0; i<min(h, 2*n+5); i++){
+        for(int j=0; j<min(w, 2*m+5); j++){
+            sum[i][j+1] += sum[i][j];
         }
     }
 
-    int ans;
-    for(auto i : divisor){
-        int cnt = 0;
-        for(int j=0; j<n; j++){
-            if(a[j] % i == 0 || b[j] % i == 0) cnt++;
+    for(int i=0; i<min(w, 2*m+5); i++){
+        for(int j=0; j<min(h, 2*n+5); j++){
+            sum[j+1][i] += sum[j][i];
         }
+    }
 
-        if(cnt == n) ans = i;
+    ll ans = 0;
+    for(int i=0; i<min(h, 2*n+1); i++){
+        for(int j=0; j<min(w, 2*m+1); j++){
+            ll val = !!sum[i][j];
+
+            if(i == n && 2 * n < h) val *= (h - 2 * n);
+            if(j == m && 2 * m < w) val *= (w - 2 * m);
+            
+            ans += val;
+        }
     }
 
     cout << ans << endl;

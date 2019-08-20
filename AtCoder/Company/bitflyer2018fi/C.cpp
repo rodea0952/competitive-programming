@@ -46,33 +46,23 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n; cin>>n;
-    vector<int> a(n), b(n);
-    for(int i=0; i<n; i++) cin>>a[i]>>b[i];
+    string s; cin>>s;
+    int n = s.size();
 
-    set<int> divisor;
-    for(int i=1; i*i<=a[0]; i++){
-        if(a[0] % i == 0){
-            divisor.emplace(i);
-            divisor.emplace(a[0] / i);
+    int cnt = 100000;
+    vector<int> cnt_stack(200001, 0);
+    cnt_stack[cnt] = 1;
+    ll ans = 0;
+    for(int i=0; i<n; i++){
+        if(s[i] == '('){
+            cnt++;
+            cnt_stack[cnt] = 1;
         }
-    }
-    
-    for(int i=1; i*i<=b[0]; i++){
-        if(b[0] % i == 0){
-            divisor.emplace(i);
-            divisor.emplace(b[0] / i);
+        else{
+            cnt--;
+            ans += cnt_stack[cnt];
+            cnt_stack[cnt]++;
         }
-    }
-
-    int ans;
-    for(auto i : divisor){
-        int cnt = 0;
-        for(int j=0; j<n; j++){
-            if(a[j] % i == 0 || b[j] % i == 0) cnt++;
-        }
-
-        if(cnt == n) ans = i;
     }
 
     cout << ans << endl;

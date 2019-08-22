@@ -42,47 +42,13 @@ constexpr double EPS = 1e-10;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
-ll dp[60][6000][2];
-
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n; cin>>n;
-    ll K; cin>>K;
-    vector<ll> a(n);
-    for(int i=0; i<n; i++){
-        cin>>a[i];
-        int cnt = 0;
-        while(0 < a[i]){
-            cnt++;
-            a[i] /= 2;
-        }
-        a[i] = cnt;
-    }
-
-    dp[0][0][0] = 1;
-    K = min(K, 5000LL);
-    for(int i=0; i<n; i++){
-        for(int j=0; j<=K; j++){
-            
-            for(int k=0; k<a[i]; k++){
-                (dp[i+1][j+k][0] += dp[i][j][0]) %= MOD;
-                (dp[i+1][j+k][1] += dp[i][j][1]) %= MOD;
-            }
-
-            (dp[i+1][j+a[i]][1] += dp[i][j][0] + dp[i][j][1]) %= MOD;
-        }
-    }
-
-    ll ans = 0;
-    if(K <= 5000){
-        (ans += dp[n][K][0]) %= MOD;
-    }
-
-    for(int i=0; i<=K; i++){
-        (ans += dp[n][i][1]) %= MOD;
-    }
-
-    cout << ans << endl;
+    int x, k; cin>>x>>k;
+    int plus = 1;
+    for(int i=0; i<k; i++) plus *= 10;
+    int minus = x % plus;
+    cout << x + plus - minus << endl;
 }

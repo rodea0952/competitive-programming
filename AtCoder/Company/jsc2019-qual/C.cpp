@@ -42,35 +42,46 @@ constexpr double EPS = 1e-10;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
-int a[510][510];
-
-// [lb, ub]
-void rec(int lb, int ub, int depth){
-    if(lb == ub) return ;
-    int mid = (lb + ub) / 2;
-
-    // [lb, mid] ↔ [mid + 1, ub]
-    for(int i=lb; i<=mid; i++){
-        for(int j=mid+1; j<=ub; j++){
-            a[i][j] = depth;
-        }
-    }
-
-    rec(lb, mid, depth + 1);
-    rec(mid + 1, ub, depth + 1);
-}
-
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
     int n; cin>>n;
+    string s; cin>>s;
 
-    rec(1, n, 1);
-
-    for(int i=1; i<=n-1; i++){
-        for(int j=i+1; j<=n; j++){
-            cout << a[i][j] << " \n"[j == n];
+    int right = 0;
+    ll ans = 1;
+    for(auto c : s){
+        if(c == 'B'){
+            if(right % 2){
+                (ans *= right) %= MOD;
+                right--;
+            }
+            else{
+                right++;
+            }
         }
+        else{
+            if(right % 2){
+                right++;
+            }
+            else{
+                (ans *= right) %= MOD;
+                right--;
+            }
+        }
+
+        if(right < 0) break;
     }
+
+    if(right != 0){
+        cout << 0 << endl;
+        return 0;
+    }
+
+    for(int i=1; i<=n; i++){
+        (ans *= i) %= MOD;
+    }
+
+    cout << ans << endl;
 }

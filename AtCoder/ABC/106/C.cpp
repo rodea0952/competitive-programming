@@ -46,27 +46,16 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n, m; cin>>n>>m;
-    vector<vector<P>> G(n);
-    for(int i=0; i<m; i++){
-        int p, y; cin>>p>>y;
-        p--;
-        G[p].emplace_back(y, i);
-    }
+    string s; cin>>s;
+    ll k; cin>>k;
+    int n = s.size();
 
-    vector<P> ans(m);
-    for(int i=0; i<n; i++){
-        sort(G[i].begin(), G[i].end());
-        for(int j=0; j<G[i].size(); j++){
-            int y, index;
-            tie(y, index) = G[i][j];
-
-            ans[index] = make_pair(i + 1, j + 1);
+    for(int i=0; i<min(k, (ll)n); i++){
+        if(s[i] != '1'){
+            cout << s[i] << endl;
+            return 0;
         }
     }
 
-    for(int i=0; i<m; i++){
-        cout << setfill('0') << right << setw(6) << ans[i].first;
-        cout << setfill('0') << right << setw(6) << ans[i].second << endl;
-    }
+    cout << 1 << endl;
 }

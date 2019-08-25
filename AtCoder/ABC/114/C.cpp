@@ -1,54 +1,89 @@
-#include <bits/stdc++.h>
-#define chmin(a, b) ((a)=min((a), (b)))
-#define chmax(a, b) ((a)=max((a), (b)))
-#define fs first
-#define sc second
-#define eb emplace_back
+#pragma GCC optimize("O3")
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <string>
+#include <cstring>
+#include <deque>
+#include <list>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <map>
+#include <set>
+#include <complex>
+#include <cmath>
+#include <limits>
+#include <cfloat>
+#include <climits>
+#include <ctime>
+#include <cassert>
+#include <numeric>
+#include <fstream>
+#include <functional>
+#include <bitset>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> P;
-typedef tuple<int, int, int> T;
+using ll = long long;
+using P = pair<int, int>;
+using T = tuple<int, int, int>;
 
-const ll MOD=1e9+7;
-const ll INF=1e18;
+template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
+template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 
-int dx[]={1, -1, 0, 0};
-int dy[]={0, 0, 1, -1};
+constexpr int MOD = 1e9 + 7;
+constexpr int inf = 1e9;
+constexpr long long INF = 1e18;
+constexpr double pi = acos(-1);
+constexpr double EPS = 1e-10;
 
-vector<ll> v;
+int dx[] = {1, 0, -1, 0};
+int dy[] = {0, 1, 0, -1};
 
-void calc(ll n){
-    if(n>1e9) return;
+vector<int> v;
 
-    v.eb(n);
-    calc(n*10+3);
-    calc(n*10+5);
-    calc(n*10+7);
+void rec(ll num){
+    if(1e9 <= num) return ;
 
-    return;    
+    v.emplace_back(num);
+
+    rec(num * 10 + 3);
+    rec(num * 10 + 5);
+    rec(num * 10 + 7);
 }
 
 int main(){
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+
     int n; cin>>n;
-    calc(0);
-    vector<ll> ans;
-    for(int i=0; i<v.size(); i++){
-        ll num=v[i];
-        bool exist3=false, exist5=false, exist7=false;
-        while(num>0){
-            if(num%10==3) exist3=true;
-            if(num%10==5) exist5=true;
-            if(num%10==7) exist7=true;
-            num/=10;            
+
+    rec(0);
+
+    set<int> num357;
+    for(auto i:v){
+        bool is3 = false;
+        bool is5 = false;
+        bool is7 = false;
+
+        int num = i;
+        while(0 < num){
+            if(num % 10 == 3) is3 = true;
+            if(num % 10 == 5) is5 = true;
+            if(num % 10 == 7) is7 = true;
+            num /= 10;
         }
 
-        if(exist3 && exist5 && exist7) ans.eb(v[i]);
+        if(is3 && is5 && is7) num357.emplace(i);
     }
 
-    int cnt=0;
-    for(int i=0; i<ans.size(); i++){
-        if(ans[i]<=n) cnt++;
+    int ans = 0;
+    for(auto i:num357){
+        if(n < i) break;
+        ans++;
     }
-    cout << cnt << endl;
+
+    cout << ans << endl;
 }

@@ -1,8 +1,3 @@
-#include <bits/stdc++.h>
-using namespace std;
-
-typedef pair<int, int> P;
-
 int n;
 
 vector<int> dijkstra(int s, vector<vector<P>> &G){
@@ -13,14 +8,13 @@ vector<int> dijkstra(int s, vector<vector<P>> &G){
 
     while(que.size()){
         int ccost, cv;
-        tie(ccost, cv) = que.top();
-        que.pop();
+        tie(ccost, cv) = que.top(); que.pop();
 
         if(dist[cv] < ccost) continue;
 
-        for(auto x : G[cv]){
+        for(auto nxt : G[cv]){
             int nv, ncost;
-            tie(nv, ncost) = x;
+            tie(nv, ncost) = nxt;
 
             if(dist[cv] + ncost < dist[nv]){
                 dist[nv] = dist[cv] + ncost;
@@ -32,18 +26,9 @@ vector<int> dijkstra(int s, vector<vector<P>> &G){
     return dist;
 }
 
-int main(){
-    cin>>n;
-    vector<vector<P>> G(n);
-    for(int i=0; i<n-1; i++){
-        int s, t, w; cin>>s>>t>>w;
-        G[s].emplace_back(t, w);
-        G[t].emplace_back(s, w);
-    }
-
+int diameter(vector<vector<P>> &G){
     vector<int> dist1 = dijkstra(0, G);
     int v1 = max_element(dist1.begin(), dist1.end()) - dist1.begin();
     vector<int> dist2 = dijkstra(v1, G);
-    
-    cout << *max_element(dist2.begin(), dist2.end()) << endl;
+    return *max_element(dist2.begin(), dist2.end());
 }

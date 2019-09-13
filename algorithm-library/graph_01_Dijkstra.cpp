@@ -7,8 +7,7 @@ void dijkstra(int s){
 
     while(que.size()){
         int ccost, cv;
-        tie(ccost, cv) = que.top();
-        que.pop();
+        tie(ccost, cv) = que.top(); que.pop();
 
         if(dist[cv] < ccost) continue;
 

@@ -1,48 +1,49 @@
-const int MAX_V = 100010;
-const int MAX_LOG_V = 110;
+struct LCA{
+    static const int MAX_LOG_V = 30;
+    vector<int> parent[MAX_LOG_V]; // 親を2^k回辿って到達する頂点（根を通り過ぎる場合は-1）
+    vector<int> depth;
 
-vector<vector<int>> G(MAX_V);
-int root;
+    void init(int V, vector<vector<int>> &G){
+        int root = 0;
+        for(int i=0; i<MAX_LOG_V; i++) parent[i].resize(V);
+        depth.resize(V, -1);
 
-int parent[MAX_LOG_V][MAX_V]; // 親を2^k回辿って到達する頂点（根を通り過ぎる場合は-1）
-int depth[MAX_V];             // 根からの深さ
-
-void dfs(int v, int p, int d){
-    parent[0][v] = p;
-    depth[v] = d;
-    for(int i=0; i<G[v].size(); i++){
-        if(G[v][i] != p) dfs(G[v][i], v, d+1);
-    }
-}
-
-void init(int V){
-    dfs(root, -1, 0);
-    
-    for(int k=0; k+1<MAX_LOG_V; k++){
-        for(int v=0; v<V; v++){
-            if(parent[k][v] < 0) parent[k+1][v] = -1;
-            else parent[k+1][v] = parent[k][parent[k][v]];
-        }
-    }
-}
-
-int lca(int u, int v){
-    // uとvの深さが同じになるまで親を辿る
-    if(depth[u] > depth[v]) swap(u, v);
-
-    for(int k=0; k<MAX_LOG_V; k++){
-        if((depth[v] - depth[u]) >> k & 1){
-            v = parent[k][v];
+        dfs(root, -1, 0, G);
+        
+        for(int k=0; k+1<MAX_LOG_V; k++){
+            for(int v=0; v<V; v++){
+                if(parent[k][v] < 0) parent[k+1][v] = -1;
+                else parent[k+1][v] = parent[k][parent[k][v]];
+            }
         }
     }
 
-    if(u == v) return u;
-
-    for(int k=MAX_LOG_V-1; k>=0; k--){
-        if(parent[k][u] != parent[k][v]){
-            u = parent[k][u];
-            v = parent[k][v];
+    void dfs(int v, int p, int d, vector<vector<int>> &G){
+        parent[0][v] = p;
+        depth[v] = d;
+        for(int i=0; i<G[v].size(); i++){
+            if(G[v][i] != p) dfs(G[v][i], v, d+1, G);
         }
     }
-    return parent[0][u];
-}
+
+    int calc_lca(int u, int v){
+        // uとvの深さが同じになるまで親を辿る
+        if(depth[u] > depth[v]) swap(u, v);
+
+        for(int k=0; k<MAX_LOG_V; k++){
+            if((depth[v] - depth[u]) >> k & 1){
+                v = parent[k][v];
+            }
+        }
+
+        if(u == v) return u;
+
+        for(int k=MAX_LOG_V-1; k>=0; k--){
+            if(parent[k][u] != parent[k][v]){
+                u = parent[k][u];
+                v = parent[k][v];
+            }
+        }
+        return parent[0][u];
+    }
+};

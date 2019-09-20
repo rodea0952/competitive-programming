@@ -46,22 +46,18 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n; cin>>n;
-    map<ll, ll> cnt;
-    ll sum = 0;
-    cnt[0]++;
+    int n, s, k; cin>>n>>s>>k;
+    vector<vector<ll>> dp(n+1, vector<ll>(s+1, 0));
+    dp[1][0] = 1;
+
     for(int i=0; i<n; i++){
-        ll a; cin>>a;
-        sum += a;
-        cnt[sum]++;
+        for(int j=0; j<=s; j++){
+            if(j - k * (n - i) >= 0) (dp[i+1][j] += dp[i][j-k*(n-i)]) %= MOD;
+            if(j - (n - i) >= 0) (dp[i+1][j] += dp[i+1][j-(n-i)]) %= MOD;
+        }
     }
 
-    ll ans = 0;
-    for(auto i : cnt){
-        ans += (i.second * (i.second - 1)) / 2;
-    }
-
-    cout << ans << endl;
+    cout << dp[n][s] << endl;
 
     return 0;
 }

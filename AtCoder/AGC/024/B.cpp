@@ -46,19 +46,23 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    ll n, a, b, c, d; cin>>n>>a>>b>>c>>d;
-
-    bool valid = false;
-    for(ll i=0; i<n; i++){
-        ll lb = c * i - (n - 1 - i) * d;
-        ll ub = d * i - (n - 1 - i) * c;
-
-        if(a + lb <= b && b <= a + ub){
-            valid = true;
-        }
+    int n; cin>>n;
+    vector<int> p2index(n);
+    for(int i=0; i<n; i++){
+        int p; cin>>p;
+        p2index[--p] = i;
     }
 
-    cout << (valid ? "YES" : "NO") << endl;
+    int ans = 1;
+    int sum = 1;
+    for(int i=0; i+1<n; i++){
+        if(p2index[i] < p2index[i+1]) sum++;
+        else sum = 1;
+
+        chmax(ans, sum);
+    }
+
+    cout << n - ans << endl;
 
     return 0;
 }

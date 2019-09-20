@@ -46,19 +46,18 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    ll n, a, b, c, d; cin>>n>>a>>b>>c>>d;
+    int x, a, b; cin>>x>>a>>b;
+    int n; cin>>n;
+    while(n--){
+        string s; cin>>s;
+        if(s[0] == 'n') x += a;
+        else if(s[0] == 't') x += b;
+        else x = 0;
 
-    bool valid = false;
-    for(ll i=0; i<n; i++){
-        ll lb = c * i - (n - 1 - i) * d;
-        ll ub = d * i - (n - 1 - i) * c;
-
-        if(a + lb <= b && b <= a + ub){
-            valid = true;
-        }
+        x = max(0, x);
     }
 
-    cout << (valid ? "YES" : "NO") << endl;
+    cout << x << endl;
 
     return 0;
 }

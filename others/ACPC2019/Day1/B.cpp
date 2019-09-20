@@ -46,19 +46,26 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    ll n, a, b, c, d; cin>>n>>a>>b>>c>>d;
-
-    bool valid = false;
-    for(ll i=0; i<n; i++){
-        ll lb = c * i - (n - 1 - i) * d;
-        ll ub = d * i - (n - 1 - i) * c;
-
-        if(a + lb <= b && b <= a + ub){
-            valid = true;
-        }
+    int n; cin>>n;
+    string s; cin>>s;
+    int ncnt = 0, scnt = 0, ecnt = 0, wcnt = 0;
+    for(int i=0; i<n; i++){
+        ncnt += ('A' <= s[i] && s[i] <= 'M');
+        scnt += ('N' <= s[i] && s[i] <= 'Z');
+        ecnt += ('a' <= s[i] && s[i] <= 'm');
+        wcnt += ('n' <= s[i] && s[i] <= 'z');
     }
 
-    cout << (valid ? "YES" : "NO") << endl;
+    cout << max(ncnt, scnt) - min(ncnt, scnt) + max(ecnt, wcnt) - min(ecnt, wcnt) << endl;
+    for(int i=0; i<max(ncnt, scnt) - min(ncnt, scnt); i++){
+        if(ncnt > scnt) cout << 'A';
+        else cout << 'N';
+    }
+    for(int i=0; i<max(ecnt, wcnt) - min(ecnt, wcnt); i++){
+        if(ecnt > wcnt) cout << 'a';
+        else cout << 'n';
+    }
+    cout << endl;
 
     return 0;
 }

@@ -46,25 +46,33 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n, c, k; cin>>n>>c>>k;
-    vector<int> t(n);
-    for(int i=0; i<n; i++) cin>>t[i];
-    sort(t.begin(), t.end());
+    int n; cin>>n;
+    vector<int> l(n), r(n);
+    for(int i=0; i<n; i++) cin>>l[i]>>r[i];
+    sort(l.begin(), l.end(), greater<int>());
+    sort(r.begin(), r.end());
 
-    int ans = 0;
+    ll ans = 0;
+
+    // start from left
+    ll sum = 0;
     for(int i=0; i<n; i++){
-        int start_time = t[i];
-        int cnt = 0;
-        while(i < n && cnt < c && t[i] - start_time <= k){
-            cnt++;
-            i++;
-        }
-
-        i--;
-        ans++;
+        sum += l[i];
+        chmax(ans, sum);
+        sum -= r[i];
+        chmax(ans, sum);
     }
 
-    cout << ans << endl;
+    // start from right
+    sum = 0;
+    for(int i=0; i<n; i++){
+        sum -= r[i];
+        chmax(ans, sum);
+        sum += l[i];
+        chmax(ans, sum);
+    }
+
+    cout << ans * 2 << endl;
 
     return 0;
 }

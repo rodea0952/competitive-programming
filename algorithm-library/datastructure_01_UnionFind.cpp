@@ -1,37 +1,49 @@
-int par[MAX_N];
-int ranks[MAX_N];
-int size[MAX_N];
-int uf_size;
+struct UnionFind{
+    vector<int> par;
+    vector<int> rank;
+    vector<int> sz;
+    int uf_size;
 
-void init(int n){
-    uf_size = n;
-    for(int i=0; i<n; i++){
-        par[i] = i;
-        ranks[i] = 0;
-        size[i] = 1;
+private:
+    void init(int n = 1){
+        par.resize(n);
+        rank.resize(n);
+        sz.resize(n);
+        uf_size = n;
+        for(int i=0; i<n; i++){
+            par[i] = i;
+            rank[i] = 0;
+            sz[i] = 1;
+        }
+    }
+
+public:
+    UnionFind(int n = 1){
+        init(n);
+    }
+
+    int find(int x){
+        if(par[x] == x) return x;
+        else return par[x] = find(par[x]);
     }
     
-    return ;
-}
+    bool same(int x, int y){
+        return find(x) == find(y);
+    }
 
-int find(int x){
-    if(par[x] == x) return x;
-    else return par[x] = find(par[x]);
-}
+    bool unite(int x, int y){
+        x = find(x);
+        y = find(y);
+        if(x == y) return false;
+        if(rank[x] < rank[y]) swap(x, y);
+        if(rank[x] == rank[y]) rank[x]++;
+        uf_size--;
+        par[y] = x;
+        sz[x] = sz[x] + sz[y];
+        return true;
+    }
 
-bool same(int x, int y){
-    return find(x) == find(y);
-}
-
-void unite(int x, int y){
-    x = find(x);
-    y = find(y);
-    if(x == y) return ;
-    uf_size--;
-
-    if(ranks[x] < ranks[y]) swap(x, y);
-    if(ranks[x] == ranks[y]) ranks[x]++;
-    par[y] = x;
-    size[x] += size[y];
-    return ;
-}
+    int size(int x){
+        return sz[find(x)];
+    }
+};

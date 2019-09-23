@@ -42,36 +42,49 @@ constexpr double EPS = 1e-10;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
-int LIS(vector<int> &a){
-    // dp[i] := 長さが i+1 であるような増加部分列における最終要素の最小値
-    int n = a.size();
-    vector<int> dp(n, inf);
-    for(int i=0; i<n; i++){
-        *lower_bound(dp.begin(), dp.end(), a[i]) = a[i];
+double snuke(ll i){
+    int digit = 0;
+    ll num = i;
+    while(0 < num){
+        digit += num % 10;
+        num /= 10;
     }
-
-    return lower_bound(dp.begin(), dp.end(), inf) - dp.begin();
+    return 1. * i / digit;
 }
 
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n; cin>>n;
-    vector<P> wh(n);
-    for(int i=0; i<n; i++){
-        int w, h; cin>>w>>h;
-        wh[i] = P(w, -h);
+    int k; cin>>k;
+
+    vector<ll> v;
+    for(int i=1; i<=9; i++) v.emplace_back(i);
+
+    ll base = 9;
+    for(int i=0; i<14; i++){
+        for(int j=1; j<=999; j++){
+            string s = to_string(j) + to_string(base);
+            v.emplace_back(stoll(s));
+        }
+
+        base *= 10;
+        base += 9;
     }
 
-    sort(wh.begin(), wh.end());
+    sort(v.begin(), v.end());
+    v.erase(unique(v.begin(), v.end()), v.end());
 
-    vector<int> v;
-    for(int i=0; i<n; i++){
-        v.emplace_back(-wh[i].second);
+    for(int i=0; i<v.size(); i++){
+        for(int j=i+1; j<v.size(); j++){
+            if(snuke(v[i]) > snuke(v[j])){
+                v.erase(v.begin() + i--);
+                break;
+            }
+        }
     }
 
-    cout << LIS(v) << endl;
+    for(int i=0; i<k; i++) cout << v[i] << endl;
 
     return 0;
 }

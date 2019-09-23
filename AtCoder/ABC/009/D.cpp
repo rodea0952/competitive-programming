@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include <iostream>
 #include <iomanip>
 #include <cstdio>
@@ -23,48 +24,72 @@
 #include <fstream>
 #include <functional>
 #include <bitset>
-#define chmin(a, b) ((a)=min((a), (b)))
-#define chmax(a, b) ((a)=max((a), (b)))
-#define fs first
-#define sc second
-#define eb emplace_back
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> P;
-typedef tuple<int, int, int> T;
+using ll = long long;
+using P = pair<int, int>;
+using T = tuple<int, int, int>;
 
-const ll MOD=1e9+7;
-const ll INF=1e18;
-const double pi=acos(-1);
-const double eps=1e-10;
+template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
+template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 
-int dx[]={1, 0, -1, 0};
-int dy[]={0, -1, 0, 1};
+constexpr int MOD = 1e9 + 7;
+constexpr int inf = 1e9;
+constexpr long long INF = 1e18;
+constexpr double pi = acos(-1);
+constexpr double EPS = 1e-10;
+
+int dx[] = {1, 0, -1, 0};
+int dy[] = {0, 1, 0, -1};
+
+vector<vector<ll>> mul(vector<vector<ll>> &A, vector<vector<ll>> &B){
+    vector<vector<ll>> C(A.size(), vector<ll>(B.size()));
+
+    for(int i=0; i<A.size(); i++){
+        for(int k=0; k<B.size(); k++){
+            for(int j=0; j<B[0].size(); j++){
+                C[i][j] ^= A[i][k] & B[k][j];
+            }
+        }
+    }
+    
+    return C;
+}
+
+vector<vector<ll>> pow(vector<vector<ll>> A, ll n){
+    vector<vector<ll>> B(A.size(), vector<ll>(A.size()));
+
+    for(int i=0; i<A.size(); i++){
+        B[i][i] = LLONG_MAX;
+    }
+
+    while(n > 0){
+        if(n & 1LL) B = mul(B, A);
+        A = mul(A, A);
+        n >>= 1LL;
+    }
+
+    return B;
+}
 
 int main(){
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+
     int k, m; cin>>k>>m;
-    vector<ll> a;
-    vector<ll> c(k);
-    for(int i=0; i<k; i++){
-        ll x; cin>>x;
-        a.push_back(x);
-    }
-    for(int i=0; i<k; i++) cin>>c[i];
+    vector<vector<ll>> A(k, vector<ll>(1));
+    for(int i=0; i<k; i++) cin>>A[k-i-1][0];
 
-    while(a.size() < 100){
-        //cout << a.size() << endl;
-        vector<ll> num;
-        for(int i=0; i<k; i++){
-            num.push_back(c[i] & a[a.size()-1-i]);
-        }
+    vector<vector<ll>> B(k, vector<ll>(k, 0));
+    for(int i=0; i<k; i++) cin>>B[0][i];
 
-        ll sum=0;
-        for(int i=0; i<num.size(); i++){
-            sum ^= num[i];
-        }
+    // AND に対する単位元は 1 ではなく 2^n-1
+    for(int i=0; i+1<k; i++) B[i+1][i] = LLONG_MAX;
 
-        a.push_back(sum);
-        cout << sum << endl;
-    }
+    B = pow(B, m - 1);
+    A = mul(B, A);
+
+    cout << A[k-1][0] << endl;
+
+    return 0;
 }

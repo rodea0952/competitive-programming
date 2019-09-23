@@ -42,15 +42,21 @@ constexpr double EPS = 1e-10;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
-int LIS(vector<int> &a){
-    // dp[i] := 長さが i+1 であるような増加部分列における最終要素の最小値
-    int n = a.size();
-    vector<int> dp(n, inf);
-    for(int i=0; i<n; i++){
-        *lower_bound(dp.begin(), dp.end(), a[i]) = a[i];
+vector<int> Zalgorithm(string s){
+    int n = s.size();
+    vector<int> a(n);
+    a[0] = n;
+    int i = 1, j = 0;
+    while(i < n){
+        while(i + j < n && s[j] == s[i+j]) ++j;
+        a[i] = j;
+        if(j == 0){++i; continue;}
+        int k = 1;
+        while(i + k < n && k + a[k] < j) a[i+k] = a[k], ++k;
+        i += k; j -= k;
     }
 
-    return lower_bound(dp.begin(), dp.end(), inf) - dp.begin();
+    return a;
 }
 
 int main(){
@@ -58,20 +64,18 @@ int main(){
     ios::sync_with_stdio(false);
 
     int n; cin>>n;
-    vector<P> wh(n);
+    string s; cin>>s;
+
+    int ans = 0;
     for(int i=0; i<n; i++){
-        int w, h; cin>>w>>h;
-        wh[i] = P(w, -h);
+        string t = s.substr(i);
+        auto v = Zalgorithm(t);
+        for(int j=0; j<v.size(); j++){
+            if(j >= v[j]) chmax(ans, v[j]);
+        }
     }
 
-    sort(wh.begin(), wh.end());
-
-    vector<int> v;
-    for(int i=0; i<n; i++){
-        v.emplace_back(-wh[i].second);
-    }
-
-    cout << LIS(v) << endl;
+    cout << ans << endl;
 
     return 0;
 }

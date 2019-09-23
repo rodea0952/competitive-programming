@@ -42,36 +42,29 @@ constexpr double EPS = 1e-10;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
-int LIS(vector<int> &a){
-    // dp[i] := 長さが i+1 であるような増加部分列における最終要素の最小値
-    int n = a.size();
-    vector<int> dp(n, inf);
-    for(int i=0; i<n; i++){
-        *lower_bound(dp.begin(), dp.end(), a[i]) = a[i];
-    }
-
-    return lower_bound(dp.begin(), dp.end(), inf) - dp.begin();
-}
-
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n; cin>>n;
-    vector<P> wh(n);
+    string s; cin>>s;
+    int n = s.size();
+    map<string, int> cnt;
     for(int i=0; i<n; i++){
-        int w, h; cin>>w>>h;
-        wh[i] = P(w, -h);
+        for(int j=1; j<=10; j++){
+            if(n < i + j) continue;
+            string t = s.substr(i, j);
+            cnt[t]++;
+        }
     }
 
-    sort(wh.begin(), wh.end());
-
-    vector<int> v;
-    for(int i=0; i<n; i++){
-        v.emplace_back(-wh[i].second);
+    int m; cin>>m;
+    int ans = 0;
+    while(m--){
+        string c; cin>>c;
+        ans += cnt[c];
     }
 
-    cout << LIS(v) << endl;
+    cout << ans << endl;
 
     return 0;
 }

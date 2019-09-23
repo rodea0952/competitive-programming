@@ -42,45 +42,34 @@ constexpr double EPS = 1e-10;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
-vector<vector<ll>> dist(60, vector<ll>(60, inf));
-void warshall_floyd(int n){
-    for(int i=0; i<n; i++) dist[i][i] = 0;
-
-    for(int k=0; k<n; k++){
-        for(int i=0; i<n; i++){
-            for(int j=0; j<n; j++){
-                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
-            }
-        }
-    }
-}
-
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
     int n; cin>>n;
-    vector<ll> s(n);
-    for(int i=0; i<n; i++) cin>>s[i];
-    int m; cin>>m;
-    for(int i=0; i<m; i++){
-        int a, b, c; cin>>a>>b>>c;
-        dist[a][b] = dist[b][a] = c;
-    }
+    vector<int> m(n);
+    for(int i=0; i<n; i++) cin>>m[i];
 
-    warshall_floyd(n);
+    vector<int> dp(1<<n, inf);
+    dp[0] = 0;
 
-    ll ans = INF;
-    for(int i=1; i<n-1; i++){
-        for(int j=1; j<n-1; j++){
-            if(i == j) continue;
+    for(int bit=0; bit<(1<<n); bit++){
+        int sum = 0;
+        for(int i=0; i<n; i++){
+            if(bit & (1 << i)) sum += m[i];
+        }
+        sum %= 1000;
 
-            // 0 -> i -> j -> n-1
-            chmin(ans, dist[0][i] + dist[i][j] + dist[j][n-1] + s[i] + s[j]);
+        for(int i=0; i<n; i++){
+            if(!(bit & (1 << i))){
+                int nbit = bit | (1 << i);
+                int cost = max(0, m[i] - sum);
+                chmin(dp[nbit], dp[bit] + cost);
+            }
         }
     }
 
-    cout << ans << endl;
-    
+    cout << dp[(1<<n)-1] << endl;
+
     return 0;
 }

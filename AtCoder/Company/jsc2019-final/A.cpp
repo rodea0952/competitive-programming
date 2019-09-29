@@ -46,18 +46,28 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n; cin>>n;
-    vector<int> v(n);
-    for(int i=0; i<n; i++) cin>>v[i];
+    int n, m; cin>>n>>m;
+    vector<int> a(n), b(m);
+    for(int i=0; i<n; i++) cin>>a[i];
+    for(int i=0; i<m; i++) cin>>b[i];
 
-    vector<int> dp(n+1, 0);
-    dp[1] = v[0];
+    int lim = 2e6 + 1;
+    vector<P> sum_exist(lim, P(-1, -1));
 
-    for(int i=1; i<n; i++){
-        dp[i+1] = max(dp[i], dp[i-1] + v[i]);
+    for(int i=0; i<n; i++){
+        for(int j=0; j<m; j++){
+            int sum = a[i] + b[j];
+            if(sum_exist[sum].first == -1){
+                sum_exist[sum] = P(i, j);
+            }
+            else{
+                cout << sum_exist[sum].first << " " << sum_exist[sum].second << " " << i << " " << j << endl;
+                return 0;
+            }
+        }
     }
 
-    cout << dp[n] << endl;
+    cout << -1 << endl;
 
     return 0;
 }

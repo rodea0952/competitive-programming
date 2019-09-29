@@ -52,12 +52,32 @@ int main(){
 
     vector<int> dp(n+1, 0);
     dp[1] = v[0];
-
     for(int i=1; i<n; i++){
         dp[i+1] = max(dp[i], dp[i-1] + v[i]);
     }
 
+    int num = dp[n];
+    vector<int> ans;
+    for(int i=n-1; i>=0; i--){
+        if(i == 0){
+            ans.emplace_back(i);
+            break;
+        }
+
+        if(dp[i+1] == dp[i]) continue;
+
+        if(dp[i+1] - dp[i-1] == v[i]){
+            ans.emplace_back(i);
+            i--;
+        }
+    }
+
+    sort(ans.begin(), ans.end());
+
     cout << dp[n] << endl;
+    for(int i=0; i<ans.size(); i++){
+        cout << ans[i] + 1 << " \n"[i+1 == ans.size()];
+    }
 
     return 0;
 }

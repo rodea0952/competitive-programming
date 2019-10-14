@@ -15,7 +15,7 @@ void eratosthenes(int n){
 bool isPrime[MAX_L];
 bool isPrimeSmall[MAX_SQRT_B];
 
-void segmentSieve(ll a, ll b){
+void segment_sieve(ll a, ll b){
     for(int i=0; (ll)i*i<b; i++) isPrimeSmall[i] = true;
     for(int i=0; i<b-a; i++) isPrime[i] = true;
 

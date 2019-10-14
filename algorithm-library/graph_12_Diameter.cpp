@@ -1,7 +1,6 @@
-int n;
-
 vector<int> dijkstra(int s, vector<vector<P>> &G){
-    vector<int> dist(n, 1e9);
+    int n = G.size();
+    vector<int> dist(n, inf);
     priority_queue<P, vector<P>, greater<P>> que;
     dist[s] = 0;
     que.emplace(0, s);
@@ -15,7 +14,7 @@ vector<int> dijkstra(int s, vector<vector<P>> &G){
         for(auto nxt : G[cv]){
             int nv, ncost;
             tie(nv, ncost) = nxt;
-
+            
             if(dist[cv] + ncost < dist[nv]){
                 dist[nv] = dist[cv] + ncost;
                 que.emplace(dist[nv], nv);

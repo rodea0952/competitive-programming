@@ -1,6 +1,6 @@
-vector<vector<P>> G(MAX_V);
-vector<ll> dist(MAX_V, INF);
-void dijkstra(int s){
+vector<int> dijkstra(int s, vector<vector<P>> &G){
+    int n = G.size();
+    vector<int> dist(n, inf);
     priority_queue<P, vector<P>, greater<P>> que;
     dist[s] = 0;
     que.emplace(0, s);
@@ -21,4 +21,6 @@ void dijkstra(int s){
             }
         }
     }
+
+    return dist;
 }

@@ -47,31 +47,14 @@ int main(){
     ios::sync_with_stdio(false);
 
     while(1){
-        int n, m; cin>>n>>m;
-        if(n == 0) break;
-
-        vector<int> hsum(n+1, 0), wsum(m+1, 0);
-        for(int i=0; i<n; i++){
-            int h; cin>>h;
-            hsum[i+1] = hsum[i] + h;
-        }
-        for(int i=0; i<m; i++){
-            int w; cin>>w;
-            wsum[i+1] = wsum[i] + w;
-        }
-
-        map<int, int> hcnt;
-        for(int i=0; i<=n; i++){
-            for(int j=i+1; j<=n; j++){
-                hcnt[hsum[j] - hsum[i]]++;
-            }
-        }
-
-        int ans = 0;
-        for(int i=0; i<=m; i++){
-            for(int j=i+1; j<=m; j++){
-                ans += hcnt[wsum[j] - wsum[i]];
-            }
+        int t, d, l; cin>>t>>d>>l;
+        if(t == 0) break;
+        int wet = 0, ans = 0;
+        for(int i=0; i<t; i++){
+            int x; cin>>x;
+            if(l <= x) wet = d;
+            if(0 < wet && i != t - 1) ans++;
+            wet--;
         }
 
         cout << ans << endl;

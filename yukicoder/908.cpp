@@ -46,36 +46,16 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    while(1){
-        int n, m; cin>>n>>m;
-        if(n == 0) break;
+    string s;
+    getline(cin, s);
 
-        vector<int> hsum(n+1, 0), wsum(m+1, 0);
-        for(int i=0; i<n; i++){
-            int h; cin>>h;
-            hsum[i+1] = hsum[i] + h;
-        }
-        for(int i=0; i<m; i++){
-            int w; cin>>w;
-            wsum[i+1] = wsum[i] + w;
-        }
-
-        map<int, int> hcnt;
-        for(int i=0; i<=n; i++){
-            for(int j=i+1; j<=n; j++){
-                hcnt[hsum[j] - hsum[i]]++;
-            }
-        }
-
-        int ans = 0;
-        for(int i=0; i<=m; i++){
-            for(int j=i+1; j<=m; j++){
-                ans += hcnt[wsum[j] - wsum[i]];
-            }
-        }
-
-        cout << ans << endl;
+    bool valid = true;
+    for(int i=0; i<s.size(); i++){
+        if(i % 2 == 0 && !islower(s[i])) valid = false;
+        if(i % 2 == 1 && s[i] != ' ') valid = false;
     }
+
+    cout << (valid ? "Yes" : "No") << endl;
 
     return 0;
 }

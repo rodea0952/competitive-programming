@@ -46,36 +46,32 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    while(1){
-        int n, m; cin>>n>>m;
-        if(n == 0) break;
+    int n; cin>>n;
+    vector<ll> x(n), y(n);
+    for(int i=0; i<n; i++) cin>>x[i];
+    for(int i=0; i<n; i++) cin>>y[i];
 
-        vector<int> hsum(n+1, 0), wsum(m+1, 0);
-        for(int i=0; i<n; i++){
-            int h; cin>>h;
-            hsum[i+1] = hsum[i] + h;
-        }
-        for(int i=0; i<m; i++){
-            int w; cin>>w;
-            wsum[i+1] = wsum[i] + w;
-        }
-
-        map<int, int> hcnt;
-        for(int i=0; i<=n; i++){
-            for(int j=i+1; j<=n; j++){
-                hcnt[hsum[j] - hsum[i]]++;
-            }
-        }
-
-        int ans = 0;
-        for(int i=0; i<=m; i++){
-            for(int j=i+1; j<=m; j++){
-                ans += hcnt[wsum[j] - wsum[i]];
-            }
-        }
-
-        cout << ans << endl;
+    ll min_xy = INF;
+    for(int i=0; i<n; i++){
+        chmin(min_xy, x[i] + y[i]);
     }
+
+    vector<ll> ans(n);
+    ll pos0 = 1e9, posN2 = 1e9 + min_xy;
+
+    for(int i=0; i<n; i++){
+        if(x[i] < y[i]){
+            ans[i] = pos0 + x[i];
+        }
+        else{
+            ans[i] = posN2 - y[i];
+        }
+    }
+
+    cout << min_xy << endl;
+    cout << pos0 << endl;
+    for(int i=0; i<n; i++) cout << ans[i] << endl;
+    cout << posN2 << endl;
 
     return 0;
 }

@@ -1,8 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int INF = INT_MAX;
-
 // http://tsutaj.hatenablog.com/entry/2017/03/29/204841 より
 
 struct SegmentTree{
@@ -31,7 +29,7 @@ public:
 
     int getmin(int a, int b, int k=0, int l=0, int r=-1){
         if(r < 0) r = n;
-        if(r <= a || b <= l) return INF;
+        if(r <= a || b <= l) return inf;
         if(a <= l && r <= b) return node[k];
 
         int vl = getmin(a, b, 2*k+1, l, (l+r)/2);

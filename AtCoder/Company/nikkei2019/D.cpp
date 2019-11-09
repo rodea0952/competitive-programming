@@ -1,28 +1,4 @@
-#include <iostream>
-#include <iomanip>
-#include <cstdio>
-#include <string>
-#include <cstring>
-#include <deque>
-#include <list>
-#include <queue>
-#include <stack>
-#include <vector>
-#include <utility>
-#include <algorithm>
-#include <map>
-#include <set>
-#include <complex>
-#include <cmath>
-#include <limits>
-#include <cfloat>
-#include <climits>
-#include <ctime>
-#include <cassert>
-#include <numeric>
-#include <fstream>
-#include <functional>
-#include <bitset>
+#include <bits/stdc++.h>
 #define chmin(a, b) ((a)=min((a), (b)))
 #define chmax(a, b) ((a)=max((a), (b)))
 #define fs first
@@ -36,29 +12,70 @@ typedef tuple<int, int, int> T;
 
 const ll MOD=1e9+7;
 const ll INF=1e18;
-const double pi=acos(-1);
-const double eps=1e-10;
 
-int dx[]={1, 0, -1, 0};
-int dy[]={0, -1, 0, 1};
+int dx[]={1, -1, 0, 0};
+int dy[]={0, 0, 1, -1};
+
+int n;
+const int MAX_V=100010;
+
+vector<vector<int>> g(MAX_V);
+vector<vector<int>> rev(MAX_V);
+vector<int> revv;
+bool visited[MAX_V];
+int indeg[MAX_V];
+int parent[MAX_V];
+vector<int> out;
+int st;
+
+void bfs(int s){
+    st=s;
+    queue<int> que;
+    que.push(s);
+    visited[s]=true;
+
+    while(que.size()){
+        int cv=que.front(); que.pop();
+        out.push_back(cv);
+        for(int i=0; i<g[cv].size(); i++){
+            int nv=g[cv][i];
+            indeg[nv]--;
+            if(indeg[nv]==0 && !visited[nv]){
+                visited[nv]=true;
+                parent[nv]=cv;
+                que.push(nv);
+            }
+        }
+    }
+}
+
+void tsort(){
+    for(int i=0; i<n; i++){
+        for(int j=0; j<g[i].size(); j++){
+            int v=g[i][j];
+            indeg[v]++;
+        }
+    }
+
+    for(int i=0; i<n; i++){
+        if(indeg[i]==0 && !visited[i]) bfs(i);
+    }
+}
 
 int main(){
-    int n, m; cin>>n>>m;
-    vector<vector<int>> lb(n), ub(n);
-    for(int i=0; i<m; i++){
-        int t, l, r; cin>>t>>l>>r;
-        l--, r--;
-        lb[l].eb(t);
-        ub[r].eb(t);
+    int m; cin>>n>>m;
+    for(int i=0; i<n+m-1; i++){
+        int x, y; cin>>x>>y;
+        x--, y--;
+        g[x].eb(y);
+        rev[y].eb(x);
     }
 
-    ll ans=0;
-    set<int> st={0};
+    tsort();
+    
     for(int i=0; i<n; i++){
-        for(auto t : lb[i]) st.insert(t);
-        ans += *prev(st.end());
-        for(auto t : ub[i]) st.erase(t);
-    }
 
-    cout << ans << endl;
+        if(i==st) cout << 0 << endl;
+        else cout << parent[i]+1 << endl;
+    }
 }

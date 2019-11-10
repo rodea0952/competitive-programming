@@ -1,11 +1,11 @@
-struct UnionFind{
+class UnionFind{
+public:
     vector<int> par;
     vector<int> rank;
     vector<int> sz;
     int uf_size;
 
-private:
-    void init(int n = 1){
+    UnionFind(int n){
         par.resize(n);
         rank.resize(n);
         sz.resize(n);
@@ -15,11 +15,6 @@ private:
             rank[i] = 0;
             sz[i] = 1;
         }
-    }
-
-public:
-    UnionFind(int n = 1){
-        init(n);
     }
 
     int find(int x){

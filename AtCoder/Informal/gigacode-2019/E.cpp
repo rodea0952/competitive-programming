@@ -46,8 +46,42 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int a, b; cin>>a>>b;
-    cout << a * b * b << endl;
+    int n, l; cin>>n>>l;
+    int vs, ds; cin>>vs>>ds;
+    vector<T> v;
+    v.emplace_back(0, vs, ds);
+    for(int i=0; i<n; i++){
+        int xi, vi, di; cin>>xi>>vi>>di;
+        v.emplace_back(xi, vi, di);
+    }
+    v.emplace_back(l, 0, 0);
+    
+    sort(v.begin(), v.end());
+
+    int sz = v.size();
+    vector<double> dp(sz, INF);
+    dp[0] = 0;
+    for(int i=0; i<sz; i++){
+        int px, pv, pd;
+        tie(px, pv, pd) = v[i];
+        for(int j=i+1; j<sz; j++){
+            int cx, cv, cd;
+            tie(cx, cv, cd) = v[j];
+
+            int dist = cx - px;
+
+            if(pd < dist) break;
+
+            chmin(dp[j], 1. * dist / pv + dp[i]);
+        }
+    }
+
+    if(dp[sz-1] == INF){
+        cout << "impossible" << endl;
+    }
+    else{
+        printf("%.10f\n", dp[sz-1]);
+    }
 
     return 0;
 }

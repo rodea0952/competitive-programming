@@ -46,8 +46,17 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int a, b; cin>>a>>b;
-    cout << a * b * b << endl;
+    int d; cin>>d;
+    ll sum = 0, ans = INF;
+    vector<ll> a(d), b(d);
+    for(int i=0; i<d; i++) cin>>a[i];
+    for(int i=0; i<d; i++) cin>>b[i];
+    for(int i=0; i<d; i++){
+        sum += a[i];
+        if(b[i] <= sum) chmin(ans, b[i]);
+    }
+
+    cout << (ans == INF ? -1 : ans) << endl;
 
     return 0;
 }

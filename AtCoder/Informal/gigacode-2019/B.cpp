@@ -46,8 +46,14 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int a, b; cin>>a>>b;
-    cout << a * b * b << endl;
+    int n, x, y, z; cin>>n>>x>>y>>z;
+    int ans = 0;
+    while(n--){
+        int a, b; cin>>a>>b;
+        ans += (x <= a && y <= b && z <= a + b);
+    }
+
+    cout << ans << endl;
 
     return 0;
 }

@@ -42,8 +42,6 @@ constexpr double EPS = 1e-10;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
-const int MAX_N = 200020;
-
 ll modpow(ll a, ll b){
     if(b == 0) return 1;
     else if(b % 2 == 0){
@@ -55,40 +53,24 @@ ll modpow(ll a, ll b){
     }
 }
 
-ll fact[MAX_N], finv[MAX_N];
-ll comb(int n, int r){
-    if(n < r || r < 0) return 0;
-    return fact[n] * finv[n-r] % MOD * finv[r] % MOD;
-}
-
-void calc(int n){
-    fact[0] = finv[0] = 1;
-    for(int i=1; i<=n; i++){
-        fact[i] = (fact[i-1] * i) % MOD;
-        finv[i] = modpow(fact[i], MOD-2);
-    }
-}
-
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    calc(200010);
-
-    ll n, m, k; cin>>n>>m>>k;
+    int n; cin>>n;
+    vector<int> c(n);
+    for(int i=0; i<n; i++) cin>>c[i];
+    
+    sort(c.begin(), c.end());
 
     ll ans = 0;
-    for(int i=1; i<n; i++){
-        ans += i * (n - i) * m * m;
+    for(int i=0; i<n; i++){
+        int l = i, r = n - i - 1;
+        ans += (((modpow(2, r) + modpow(2, max(0, r - 1)) * r % MOD) % MOD) * modpow(2, l) % MOD) * c[i] % MOD;
         ans %= MOD;
     }
 
-    for(int i=1; i<m; i++){
-        ans += i * (m - i) * n * n;
-        ans %= MOD;
-    }
-
-    ans *= comb(n * m - 2, k - 2);
+    ans *= modpow(2, n);
     ans %= MOD;
 
     cout << ans << endl;

@@ -28,17 +28,19 @@ using namespace std;
 
 using ll = long long;
 using P = pair<int, int>;
+using T = tuple<int, int, int>;
 
 template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
 template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 
 constexpr int MOD = 1e9 + 7;
-constexpr ll INF = 1e18;
+constexpr int inf = 1e9;
+constexpr long long INF = 1e18;
 constexpr double pi = acos(-1);
 constexpr double EPS = 1e-10;
 
 int dx[] = {1, 0, -1, 0};
-int dy[] = {0, -1, 0, 1};
+int dy[] = {0, 1, 0, -1};
 
 int main(){
     cin.tie(0);
@@ -50,22 +52,16 @@ int main(){
 
     multiset<int> st;
     st.emplace(-1);
-    st.emplace(1e9+1);
 
-    int ans = 0;
     for(int i=0; i<n; i++){
         auto itr = st.lower_bound(a[i]);
         itr--;
 
-        if(*itr == -1){
-            ans++;
-        }
-        else{
-            st.erase(itr);
-        }
-
+        if(*itr != -1) st.erase(itr);
         st.emplace(a[i]);
     }
 
-    cout << ans << endl;
+    cout << st.size() - 1 << endl;
+
+    return 0;
 }

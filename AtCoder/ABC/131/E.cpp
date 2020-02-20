@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include <iostream>
 #include <iomanip>
 #include <cstdio>
@@ -23,47 +24,58 @@
 #include <fstream>
 #include <functional>
 #include <bitset>
-#define chmin(a, b) ((a) = min((a), (b)))
-#define chmax(a, b) ((a) = max((a), (b)))
-#define fs first
-#define sc second
-#define eb emplace_back
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> P;
-typedef tuple<int, int, int> T;
+using ll = long long;
+using P = pair<int, int>;
+using T = tuple<int, int, int>;
 
-const ll MOD = 1e9 + 7;
-const ll INF = 1e18;
-const double pi = acos(-1);
-const double eps = 1e-10;
+template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
+template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
+
+constexpr int MOD = 1e9 + 7;
+constexpr int inf = 1e9;
+constexpr long long INF = 1e18;
+constexpr double pi = acos(-1);
+constexpr double EPS = 1e-10;
 
 int dx[] = {1, 0, -1, 0};
-int dy[] = {0, -1, 0, 1};
+int dy[] = {0, 1, 0, -1};
 
 int main(){
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+
     int n, k; cin>>n>>k;
-    int maxedge = n * (n - 1) / 2;
-    if(maxedge - (n - 1) < k){
-        cout << "-1" << endl;
+
+    int maxk = (n - 1) * (n - 2) / 2;
+
+    if(k > maxk){
+        cout << -1 << endl;
         return 0;
     }
 
-    vector<P> edge;
-    int cnt = 0;
-    vector<P> G;
-    for(int i=1; i<=n; i++){
+    int rest = maxk - k;
+
+    vector<P> ans;
+    for(int i=2; i<=n; i++){
+        ans.emplace_back(1, i);
+    }
+
+    for(int i=2; i<=n; i++){
         for(int j=i+1; j<=n; j++){
-            G.emplace_back(i, j);
-            cnt++;
-            if(cnt == maxedge - k) goto END;
+            if(rest > 0){
+                ans.emplace_back(i, j);
+            }
+
+            rest--;
         }
     }
-    END:;
 
-    cout << G.size() << endl;
-    for(auto i:G){
+    cout << ans.size() << endl;
+    for(auto i : ans){
         cout << i.first << " " << i.second << endl;
     }
+
+    return 0;
 }

@@ -56,21 +56,21 @@ int main(){
     }
 
     vector<ll> sum(n+1, 0);
-    for(int i=0; i<n; i++) sum[i+1] = (sum[i] + a[i]) % k;
+    for(int i=0; i<n; i++) sum[i+1] = sum[i] + a[i];
 
     map<int, int> cnt;
     cnt[0] = 1;
 
     ll ans = 0;
     for(int r=1; r<=n; r++){
-        int x = (((sum[r] - r) % k) + k) % k;
+        int x = (sum[r] - r) % k;
         ans += cnt[x];
         cnt[x]++;
 
         // 要素の数が k 以上になった場合、左から消していく
         int l = r - k + 1;
         if(0 <= l){
-            int y = (((sum[l] - l) % k) + k) % k;
+            int y = (sum[l] - l) % k;
             cnt[y]--;
         }
     }

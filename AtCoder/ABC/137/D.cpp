@@ -47,25 +47,27 @@ int main(){
     ios::sync_with_stdio(false);
 
     int n, m; cin>>n>>m;
-    vector<vector<int>> jobs(m+1);
+    priority_queue<P, vector<P>, greater<P>> ab;
     for(int i=0; i<n; i++){
         int a, b; cin>>a>>b;
-        if(m < a) continue;
-        jobs[a].emplace_back(b);
+        ab.emplace(a, b);
     }
 
+    priority_queue<int> jobs;
     int ans = 0;
-    priority_queue<int> pq;
     for(int i=1; i<=m; i++){
-        for(auto j:jobs[i]){
-            pq.emplace(j);
+        while(ab.size() && ab.top().first <= i){
+            jobs.emplace(ab.top().second);
+            ab.pop();
         }
 
-        if(pq.size()){
-            ans += pq.top();
-            pq.pop();
+        if(jobs.size()){
+            ans += jobs.top();
+            jobs.pop();
         }
     }
 
     cout << ans << endl;
+
+    return 0;
 }

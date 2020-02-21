@@ -28,6 +28,7 @@ using namespace std;
 
 using ll = long long;
 using P = pair<int, int>;
+using T = tuple<int, int, int>;
 
 template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
 template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
@@ -49,24 +50,27 @@ int main(){
     int n = s.size();
 
     vector<vector<ll>> dp(n+1, vector<ll>(13, 0));
-    dp[0][0] = 1LL;
 
-    int mod = 13;
+    dp[0][0] = 1;
     for(int i=0; i<n; i++){
-        for(int j=0; j<13; j++){
+        for(int pre=0; pre<=12; pre++){
             if(s[i] == '?'){
-                for(int k=0; k<=9; k++){
-                    int j2 = (j * 10 + k) % mod;
-                    (dp[i+1][j2] += dp[i][j]) %= MOD;
+                for(int j=0; j<=9; j++){
+                    int num = pre * 10 + j;
+                    dp[i+1][num%13] += dp[i][pre];
+                    dp[i+1][num%13] %= MOD;
                 }
             }
             else{
-                int num = s[i] - '0';
-                int j2 = (j * 10 + num) % mod;
-                (dp[i+1][j2] += dp[i][j]) %= MOD;
+                int cur = s[i] - '0';
+                int num = pre * 10 + cur;
+                dp[i+1][num%13] += dp[i][pre];
+                dp[i+1][num%13] %= MOD;
             }
         }
     }
 
     cout << dp[n][5] << endl;
+
+    return 0;
 }

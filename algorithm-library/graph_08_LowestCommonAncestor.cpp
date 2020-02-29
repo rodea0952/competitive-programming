@@ -1,4 +1,5 @@
-struct LCA{
+class LCA{
+public:
     static const int MAX_LOG_V = 30;
     vector<int> parent[MAX_LOG_V]; // 親を2^k回辿って到達する頂点（根を通り過ぎる場合は-1）
     vector<int> depth;
@@ -45,5 +46,13 @@ struct LCA{
             }
         }
         return parent[0][u];
+    }
+
+    int dist(int u, int v){
+        return depth[u] + depth[v] - 2 * depth[calc_lca(u, v)];
+    }
+
+    bool is_in(int u, int v, int a){
+        return (dist(u, a) + dist(a, v) == dist(u, v));
     }
 };

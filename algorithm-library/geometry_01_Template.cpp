@@ -102,6 +102,12 @@ bool intersect(Segment s1, Segment s2){
     return intersect(s1.first, s1.second, s2.first, s2.second);
 }
 
+// 垂直二等分線
+Line bisector(Point a, Point b){
+    Point A = (a + b) * Point(0.5, 0);
+    return Line(A, A + (b - a) * Point(0, pi / 2));
+}
+
 // 線分と線分の交点
 Point getCrossPointSS(Segment s1, Segment s2){
     Vector base = s2.second - s2.first;
@@ -148,7 +154,7 @@ double convexArea(Polygon pol){
     return S / 2;
 }
 
-// 凸多角形かどうか
+// 凸多角形か判定
 bool isConvex(Polygon pol){
     int n = pol.size();
 

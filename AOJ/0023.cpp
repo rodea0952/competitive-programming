@@ -41,19 +41,38 @@ int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
 typedef complex<double> Point, Vector;
+typedef pair<Point, Point> Segment, Line;
+typedef pair<Point, double> Circle;
 
 #define X real()
 #define Y imag()
 #define EPS (1e-10)
 #define equals(a, b) (fabs((a) - (b)) < EPS)
 
+double dot(Vector a, Vector b){
+    return a.X * b.X + a.Y * b.Y;
+}
+
 double cross(Vector a, Vector b){
     return a.X * b.Y - a.Y * b.X;
 }
 
-// 平行判定
-bool isParallel(Vector a, Vector b){
-    return equals(cross(a, b), 0);
+double norm(Vector a){
+    return a.X * a.X + a.Y * a.Y;
+}
+
+double abs(Vector a){
+    return sqrt(norm(a));
+}
+
+// 円と円の関係（共通接線数）
+int intersection(Circle c1, Circle c2){
+    double dist = abs(c1.first - c2.first);
+    if(c1.second + c2.second < dist) return 4;
+    if(equals(c1.second + c2.second, dist)) return 3;
+    if(abs(c1.second - c2.second) < dist && dist < c1.second + c2.second) return 2;
+    if(equals(abs(c1.second - c2.second), dist)) return 1;
+    else return 0;
 }
 
 int main(){
@@ -62,9 +81,19 @@ int main(){
 
     int n; cin>>n;
     while(n--){
-        double x1, y1, x2, y2, x3, y3, x4, y4; cin>>x1>>y1>>x2>>y2>>x3>>y3>>x4>>y4;
-        Vector v1 = Point(x1, y1) - Point(x2, y2), v2 = Point(x3, y3) - Point(x4, y4);
-        cout << (isParallel(v1, v2) ? "YES" : "NO") << endl;
+        double x1, y1, r1, x2, y2, r2; cin>>x1>>y1>>r1>>x2>>y2>>r2;
+        Circle c1 = {Point(x1, y1), r1}, c2 = {Point(x2, y2), r2};
+        int num = intersection(c1, c2);
+
+        int ans = -1;
+        if(num == 4) ans = 0;
+        else if(1 <= num) ans = 1;
+        else{
+            if(r1 < r2) ans = -2;
+            else ans = 2;
+        }
+
+        cout << ans << endl;
     }
 
     return 0;

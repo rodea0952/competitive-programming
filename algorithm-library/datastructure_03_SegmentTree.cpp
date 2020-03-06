@@ -67,3 +67,54 @@ public:
         return vl + vr;
     }
 };
+
+// refer to http://beet-aizu.hatenablog.com/entry/2019/03/12/171221
+template <typename T, typename E, typename F, typename G>
+struct SegmentTree{
+    int n;
+    F f;
+    G g;
+    T ti;
+    vector<T> dat;
+    SegmentTree(){};
+    SegmentTree(F f, G g, T ti) : f(f), g(g), ti(ti){}
+
+    void init(int n_){    
+        n = 1;
+        while(n < n_) n <<= 1;
+        dat.assign(n << 1, ti);
+    }
+
+    void build(const vector<T> &v){
+        int sz = v.size();
+        init(sz);
+        for(int i=0; i<sz; i++) dat[n + i] = v[i];
+        for(int i=n-1; i>=0; i--) dat[i] = f(dat[(i << 1) | 0], dat[(i << 1) | 1]);
+    }
+
+    void set_val(int k, T x){
+        k += n;
+        dat[k] = g(dat[k], x);
+        while(k >>= 1) dat[k] = f(dat[(k << 1) | 0], dat[(k << 1) | 1]);    
+    }
+
+    T query(int a,int b){
+        T vl = ti, vr = ti;
+        for(int l=a+n,r=b+n;l<r;l>>=1,r>>=1) {
+            if(l & 1) vl = f(vl, dat[l++]);
+            if(r & 1) vr = f(dat[--r], vr);
+        }
+        return f(vl, vr);
+    }
+};
+
+using T = int;
+using E = int;
+auto f = [](T a, T b){
+    return a | b;
+};
+auto g = [](T a, E b){
+    return b;
+};
+T ti = 0;
+SegmentTree<T, E, decltype(f), decltype(g)> seg(f, g, ti);

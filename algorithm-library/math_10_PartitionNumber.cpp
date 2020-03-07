@@ -1,7 +1,6 @@
 // dp[i][j] := 数 j を i 分割する総数
 vector<vector<ll>> dp(1010, vector<ll>(1010, 0));
-
-void partition_function(){
+void part_init(){
     dp[0][0] = 1;
     for(int i=1; i<=1005; i++){
         for(int j=0; j<=1005; j++){
@@ -13,6 +12,4 @@ void partition_function(){
             }
         }
     }
-
-    return ;
 }

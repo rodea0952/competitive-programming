@@ -1,11 +1,11 @@
 ll modpow(ll a, ll b){
     if(b == 0) return 1;
     else if(b % 2 == 0){
-        ll d = modpow(a, b/2) % MOD;
+        ll d = modpow(a, b / 2) % MOD;
         return (d * d) % MOD;
     }
     else{
-        return (a * modpow(a, b-1)) % MOD;
+        return (a * modpow(a, b - 1)) % MOD;
     }
 }
 
@@ -15,10 +15,10 @@ ll comb(int n, int r){
     return fact[n] * finv[n-r] % MOD * finv[r] % MOD;
 }
 
-void calc(int n){
+void comb_init(int n){
     fact[0] = finv[0] = 1;
     for(int i=1; i<=n; i++){
         fact[i] = (fact[i-1] * i) % MOD;
-        finv[i] = modpow(fact[i], MOD-2);
+        finv[i] = modpow(fact[i], MOD - 2);
     }
 }

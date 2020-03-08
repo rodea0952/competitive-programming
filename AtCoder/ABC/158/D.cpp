@@ -45,44 +45,30 @@ int main(){
     ios::sync_with_stdio(false);
 
     string s; cin>>s;
-    int n = s.size();
     deque<char> deq;
-    for(int i=0; i<n; i++){
-        deq.emplace_back(s[i]);
-    }
+    for(auto i : s) deq.emplace_back(i);
 
     int q; cin>>q;
     bool rev = false;
     while(q--){
         int x; cin>>x;
         if(x == 1){
-            if(!rev) rev = true;
-            else rev = false;
+            rev ^= 1;
         }
         else{
             int f; cin>>f;
             char c; cin>>c;
-            if(f == 1){
-                if(!rev) deq.emplace_front(c);
-                else deq.emplace_back(c);
-            }
-            else{
-                if(!rev) deq.emplace_back(c);
-                else deq.emplace_front(c);
-            }
+            bool front = (f == 1 && !rev) || (f == 2 && rev);
+            
+            if(front) deq.emplace_front(c);
+            else deq.emplace_back(c);
         }
     }
-
-    string ans = "";
-    for(auto i : deq) ans += i;
     
-    if(!rev){
-        cout << ans << endl;
-    }
-    else{
-        reverse(ans.begin(), ans.end());
-        cout << ans << endl;
-    }
+    if(rev) reverse(deq.begin(), deq.end());
+
+    for(auto i : deq) cout << i;
+    cout << endl;
 
     return 0;
 }

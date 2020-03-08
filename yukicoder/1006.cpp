@@ -44,19 +44,28 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int a, b; cin>>a>>b;
+    int x; cin>>x;
+    vector<int> f(x);
+    iota(f.begin(), f.end(), 0);
 
-    for(int i=1; i<=10000; i++){
-        int ca = (i * 8) / 100;
-        int cb = (i * 10) / 100;
-
-        if(ca == a && cb == b){
-            cout << i << endl;
-            return 0;
+    for(int i=1; i<x; i++){
+        for(int j=1; j*i<x; j++){
+            f[i * j]--;
         }
     }
 
-    cout << -1 << endl;
+    int mi = inf;
+    for(int i=1; i<x; i++){
+        int a = i, b = x - i;
+        chmin(mi, abs(f[a] - f[b]));
+    }
+
+    for(int i=1; i<x; i++){
+        int a = i, b = x - i;
+        if(mi == abs(f[a] - f[b])){
+            cout << a << " " << b << endl;
+        }
+    }
 
     return 0;
 }

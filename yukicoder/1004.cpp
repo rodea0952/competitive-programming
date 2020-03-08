@@ -44,19 +44,14 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int a, b; cin>>a>>b;
+    ll a, b, x, n; cin>>a>>b>>x>>n;
 
-    for(int i=1; i<=10000; i++){
-        int ca = (i * 8) / 100;
-        int cb = (i * 10) / 100;
-
-        if(ca == a && cb == b){
-            cout << i << endl;
-            return 0;
-        }
+    if(x % 2 == 0){
+        cout << 0 << " " << n / 2 << endl;
     }
-
-    cout << -1 << endl;
+    else{
+        cout << n / 2 << " " << 0 << endl;
+    }
 
     return 0;
 }

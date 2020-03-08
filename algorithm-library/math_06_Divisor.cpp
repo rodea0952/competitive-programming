@@ -8,6 +8,7 @@ vector<ll> divisor(ll n){
     }
 
     sort(v.begin(), v.end());
+    v.erase(unique(v.begin(), v.end()), v.end());
 
     return v;
 }

@@ -44,19 +44,33 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int a, b; cin>>a>>b;
+    int n, k; cin>>n>>k;
+    k--;
+    vector<ll> a(n);
+    for(int i=0; i<n; i++) cin>>a[i];
 
-    for(int i=1; i<=10000; i++){
-        int ca = (i * 8) / 100;
-        int cb = (i * 10) / 100;
-
-        if(ca == a && cb == b){
-            cout << i << endl;
-            return 0;
-        }
+    if(a[k] == 0){
+        cout << 0 << endl;
+        return 0;
+    }
+    
+    ll rsum = 0, lsum = 0;
+    for(int i=k+1; i<n; i++){
+        rsum += a[i];
+        if(a[i] <= 1) break;
     }
 
-    cout << -1 << endl;
+    for(int i=k-1; i>=0; i--){
+        lsum += a[i];
+        if(a[i] <= 1) break;
+    }
+
+    if(a[k] == 1){
+        cout << max(lsum, rsum) + a[k] << endl;
+    }
+    else{
+        cout << lsum + rsum + a[k] << endl;
+    }
 
     return 0;
 }

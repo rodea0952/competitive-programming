@@ -1,4 +1,4 @@
-vector<vector<int>> dist(MAX_N, vector<int>(MAX_N, 1e9));
+vector<vector<int>> dist(1010, vector<int>(1010, inf));
 void warshall_floyd(int n){
     for(int i=0; i<n; i++) dist[i][i] = 0;
 

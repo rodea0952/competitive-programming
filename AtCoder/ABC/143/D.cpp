@@ -36,8 +36,8 @@ template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 constexpr int MOD = 1e9 + 7;
 constexpr int inf = 1e9;
 constexpr long long INF = 1e18;
-constexpr double pi = acos(-1);
-constexpr double EPS = 1e-10;
+
+#define all(a) (a).begin(), (a).end()
 
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
@@ -50,22 +50,14 @@ int main(){
     vector<int> l(n);
     for(int i=0; i<n; i++) cin>>l[i];
 
-    sort(l.begin(), l.end());
+    sort(all(l));
 
     ll ans = 0;
     for(int i=0; i<n; i++){
         for(int j=i+1; j<n; j++){
-            int lmin = l[i], lmid = l[j];
-            int add = lmin + lmid;
-
-            int ok = j, ng = n;
-            while(ng - ok > 1){
-                int mid = (ok + ng) / 2;
-                if(l[mid] >= add) ng = mid;
-                else ok = mid;
-            }
-
-            ans += ok - j;
+            int sum = l[i] + l[j];
+            int cnt = lower_bound(all(l), sum) - l.begin() - 1 - j;
+            ans += max(0, cnt);
         }
     }
 

@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include <iostream>
 #include <iomanip>
 #include <cstdio>
@@ -23,84 +24,72 @@
 #include <fstream>
 #include <functional>
 #include <bitset>
-#define chmin(a, b) ((a)=min((a), (b)))
-#define chmax(a, b) ((a)=max((a), (b)))
-#define fs first
-#define sc second
-#define eb emplace_back
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> P;
-typedef tuple<int, int, int> T;
+using ll = long long;
+using P = pair<int, int>;
+using T = tuple<int, int, int>;
 
-const ll MOD=1e9+7;
-const ll INF=1e18;
-const double pi=acos(-1);
-const double eps=1e-10;
+template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
+template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 
-int dx[]={1, 0, -1, 0};
-int dy[]={0, -1, 0, 1};
+constexpr int MOD = 1e9 + 7;
+constexpr int inf = 1e9;
+constexpr long long INF = 1e18;
 
-// A -> 0, G -> 1, C -> 2, T -> 3
+#define all(a) (a).begin(), (a).end()
+
+int dx[] = {1, 0, -1, 0};
+int dy[] = {0, 1, 0, -1};
+
 ll dp[110][4][4][4];
 
 int main(){
-    int n; cin>>n;
+    cin.tie(0);
+    ios::sync_with_stdio(false);
 
-    for(int i=0; i<4; i++){
-        for(int j=0; j<4; j++){
-            for(int k=0; k<4; k++){
-                dp[3][k][j][i] = 1;
+    int n; cin>>n;
+    vector<string> base = {"A", "C", "G", "T"};
+    
+    for(int pp=0; pp<4; pp++){
+        for(int p=0; p<4; p++){
+            for(int c=0; c<4; c++){
+                string cur = base[pp] + base[p] + base[c];
+                if(cur == "AGC" || cur == "GAC" || cur == "ACG") continue;
+
+                dp[3][c][p][pp] = 1;
             }
         }
     }
 
-    // AGC, ACG, GAC are invalid
-    dp[3][2][1][0] = 0;
-    dp[3][1][2][0] = 0;
-    dp[3][2][0][1] = 0;
-
     for(int i=3; i<n; i++){
-        for(int j=0; j<4; j++){ // i-2
-            for(int k=0; k<4; k++){ // i-1
-                for(int l=0; l<4; l++){ // i
+        for(int ppp=0; ppp<4; ppp++){
+            for(int pp=0; pp<4; pp++){
+                for(int p=0; p<4; p++){
+                    for(int c=0; c<4; c++){
+                        string cur = base[pp] + base[p] + base[c];
+                        if(cur == "AGC" || cur == "GAC" || cur == "ACG") continue;
+                        if(ppp == 0 && p == 2 && c == 3) continue;
 
-                    if(dp[i][l][k][j] == 0) continue;
-
-                    for(int m=0; m<4; m++){ // i+1
-                        // *AGC 
-                        if(k == 0 && l == 1 && m == 2) continue;
-
-                        // *ACG
-                        if(k == 0 && l == 2 && m == 1) continue;
-
-                        // *GAC
-                        if(k == 1 && l == 0 && m == 2) continue;
-
-                        // A*GC
-                        if(j == 0 && l == 1 && m == 2) continue;
-
-                        // AG*C
-                        if(j == 0 && k == 1 && m == 2) continue;
-
-                        dp[i+1][m][l][k] += dp[i][l][k][j];
-                        dp[i+1][m][l][k] %= MOD;
+                        dp[i+1][c][p][pp] += dp[i][p][pp][ppp];
+                        dp[i+1][c][p][pp] %= MOD;
                     }
                 }
             }
         }
     }
 
-    ll ans=0;
+    ll ans = 0;
     for(int i=0; i<4; i++){
         for(int j=0; j<4; j++){
             for(int k=0; k<4; k++){
-                ans += dp[n][i][j][k];
+                ans += dp[n][k][j][i];
                 ans %= MOD;
             }
         }
     }
 
     cout << ans << endl;
+
+    return 0;
 }

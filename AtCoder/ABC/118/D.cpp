@@ -1,55 +1,82 @@
-#include <bits/stdc++.h>
-#define chmin(a, b) ((a)=min((a), (b)))
-#define chmax(a, b) ((a)=max((a), (b)))
-#define fs first
-#define sc second
-#define eb emplace_back
+#pragma GCC optimize("O3")
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <string>
+#include <cstring>
+#include <deque>
+#include <list>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <map>
+#include <set>
+#include <complex>
+#include <cmath>
+#include <limits>
+#include <cfloat>
+#include <climits>
+#include <ctime>
+#include <cassert>
+#include <numeric>
+#include <fstream>
+#include <functional>
+#include <bitset>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> P;
-typedef tuple<int, int, int> T;
+using ll = long long;
+using P = pair<int, int>;
+using T = tuple<int, int, int>;
 
-const ll MOD=1e9+7;
-const ll INF=1e18;
+template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
+template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 
-int dx[]={1, -1, 0, 0};
-int dy[]={0, 0, 1, -1};
+constexpr int MOD = 1e9 + 7;
+constexpr int inf = 1e9;
+constexpr long long INF = 1e18;
 
-int match[]={2, 5, 5, 4, 5, 6, 3, 7, 6};
+#define all(a) (a).begin(), (a).end()
+
+int dx[] = {1, 0, -1, 0};
+int dy[] = {0, 1, 0, -1};
 
 int main(){
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+
     int n, m; cin>>n>>m;
-    vector<int> a(m);
-    vector<bool> canuse(m, false);
+    vector<bool> use(10, false);
     for(int i=0; i<m; i++){
-        cin>>a[i];
-        a[i]--;
-        canuse[a[i]]=true;
+        int a; cin>>a;
+        use[a] = true;
     }
 
-    vector<int> dp(n+10, -1);
-    dp[0]=0;
-    for(int i=0; i<10; i++){
-        if(!canuse[i]) continue;
-        for(int j=0; j+match[i]<=n; j++){
-            dp[j+match[i]]=max(dp[j+match[i]], dp[j]+1);
+    vector<int> match = {-1, 2, 5, 5, 4, 5, 6, 3, 7, 6};
+
+    vector<int> dp(n+1, -inf);
+    dp[0] = 0;
+    for(int i=1; i<=9; i++){
+        if(!use[i]) continue;
+        for(int j=0; j<=n; j++){
+            if(j - match[i] >= 0) chmax(dp[j], dp[j - match[i]] + 1);
         }
     }
 
     string ans;
-    int rem=n;
-    while(rem){
-        for(int i=8; i>=0; i--){
-            if(!canuse[i]) continue;
-            if(rem<match[i]) continue;
-
-            if(dp[rem-match[i]]==dp[rem]-1){
-                rem-=match[i];
-                ans+=(char)('0'+i+1);
+    for(int i=n; i>0; ){
+        for(int j=9; j>=1; j--){
+            if(!use[j]) continue;
+            if(i - match[j] >= 0 && dp[i - match[j]] + 1 == dp[i]){
+                i -= match[j];
+                ans += to_string(j);
                 break;
             }
         }
     }
+
     cout << ans << endl;
+
+    return 0;
 }

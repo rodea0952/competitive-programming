@@ -46,28 +46,29 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int a, b, q; cin>>a>>b>>q;
-    vector<ll> s(a+2), t(b+2);
-    s[0] = t[0] = -INF;
-    for(int i=0; i<a; i++) cin>>s[i+1];
-    for(int i=0; i<b; i++) cin>>t[i+1];
-    s[a+1] = t[b+1] = INF;
+    int n; cin>>n;
+    vector<int> x(n);
+    for(int i=0; i<n; i++) cin>>x[i];
 
-    while(q--){
-        ll x; cin>>x;
+    int cnt = 0;
+    ll ans = 1;
+    for(int i=0; i<n; i++){
 
-        int sidx = lower_bound(all(s), x) - s.begin();
-        int tidx = lower_bound(all(t), x) - t.begin();
-
-        ll ans = INF;
-        for(int i=sidx-1; i<=sidx; i++){
-            for(int j=tidx-1; j<=tidx; j++){
-                chmin(ans, min(abs(x - s[i]) + abs(s[i] - t[j]), abs(x - t[j]) + abs(t[j] - s[i])));
-            }
+        // 1, 3, 5, ... と置けないとき
+        if(x[i] < cnt * 2 + 1){
+            ans *= (cnt + 1);
+            ans %= MOD;
+            cnt--;
         }
-
-        cout << ans << endl;
+        cnt++;
     }
+
+    while(cnt > 0){
+        ans *= cnt--;
+        ans %= MOD;
+    }
+
+    cout << ans << endl;
 
     return 0;
 }

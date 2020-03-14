@@ -42,45 +42,34 @@ constexpr long long INF = 1e18;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
+int LCS(string s, string t){
+    int n = s.size(), m = t.size();
+    vector<vector<int>> dp(n+1, vector<int>(m+1, 0));
+
+    for(int i=0; i<n; i++){
+        for(int j=0; j<m; j++){
+            int cost = s[i] == t[j];
+            dp[i+1][j+1] = max({dp[i][j+1], dp[i+1][j], dp[i][j] + cost});
+        }
+    }
+
+    return dp[n][m];
+}
+
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
     int n; cin>>n;
-    ll k; cin>>k;
-    vector<ll> a(n);
-    for(int i=0; i<n; i++) cin>>a[i];
+    string s; cin>>s;
 
-    vector<vector<ll>> dp(70, vector<ll>(2, -1));
-    dp[51][0] = 0;
-    for(int d=50; d>=0; d--){
-        ll base = (1LL << d);
-        int cnt1 = 0;
-        for(int i=0; i<n; i++){
-            if(base & a[i]) cnt1++;
-        }
-
-        if(dp[d+1][1] >= 0){
-            // 未満フラグが既に立っている
-            chmax(dp[d][1], dp[d+1][1] + base * max(cnt1, n - cnt1));
-        }
-
-        if(dp[d+1][0] >= 0){
-            if(k & base){
-                // 0 にして、未満フラグを立てる
-                chmax(dp[d][1], dp[d+1][0] + base * cnt1);
-
-                // 1 にして、未満フラグを立てない
-                chmax(dp[d][0], dp[d+1][0] + base * (n - cnt1));
-            }
-            else{
-                // 0 にせざるを得ず、未満フラグを立てられない
-                chmax(dp[d][0], dp[d+1][0] + base * cnt1);
-            }
-        }
+    int ans = inf;
+    for(int i=0; i<n; i++){
+        string head = s.substr(0, i), tail = s.substr(i);
+        chmin(ans, n - 2 * LCS(head, tail));
     }
 
-    cout << max(dp[0][0], dp[0][1]) << endl;
-    
+    cout << ans << endl;
+
     return 0;
 }

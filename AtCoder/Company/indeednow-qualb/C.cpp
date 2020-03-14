@@ -42,45 +42,43 @@ constexpr long long INF = 1e18;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
+vector<int> ans;
+priority_queue<int, vector<int>, greater<int>> pque;
+vector<bool> visited(100010, false);
+
+void dfs(int cv, vector<vector<int>> &G){
+    ans.emplace_back(cv);
+    visited[cv] = true;
+
+    for(auto nv : G[cv]){
+        if(visited[nv]) continue;
+        pque.emplace(nv);
+    }
+
+    if(pque.empty()) return ;
+
+    int nxt = pque.top(); pque.pop();
+    dfs(nxt, G);
+}
+
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
     int n; cin>>n;
-    ll k; cin>>k;
-    vector<ll> a(n);
-    for(int i=0; i<n; i++) cin>>a[i];
-
-    vector<vector<ll>> dp(70, vector<ll>(2, -1));
-    dp[51][0] = 0;
-    for(int d=50; d>=0; d--){
-        ll base = (1LL << d);
-        int cnt1 = 0;
-        for(int i=0; i<n; i++){
-            if(base & a[i]) cnt1++;
-        }
-
-        if(dp[d+1][1] >= 0){
-            // 未満フラグが既に立っている
-            chmax(dp[d][1], dp[d+1][1] + base * max(cnt1, n - cnt1));
-        }
-
-        if(dp[d+1][0] >= 0){
-            if(k & base){
-                // 0 にして、未満フラグを立てる
-                chmax(dp[d][1], dp[d+1][0] + base * cnt1);
-
-                // 1 にして、未満フラグを立てない
-                chmax(dp[d][0], dp[d+1][0] + base * (n - cnt1));
-            }
-            else{
-                // 0 にせざるを得ず、未満フラグを立てられない
-                chmax(dp[d][0], dp[d+1][0] + base * cnt1);
-            }
-        }
+    vector<vector<int>> G(n);
+    for(int i=0; i<n-1; i++){
+        int a, b; cin>>a>>b;
+        a--, b--;
+        G[a].emplace_back(b);
+        G[b].emplace_back(a);
     }
 
-    cout << max(dp[0][0], dp[0][1]) << endl;
-    
+    dfs(0, G);
+
+    for(int i=0; i<n; i++){
+        cout << ans[i] + 1 << " \n"[i == n - 1];
+    }
+
     return 0;
 }

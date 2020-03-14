@@ -47,40 +47,20 @@ int main(){
     ios::sync_with_stdio(false);
 
     int n; cin>>n;
-    ll k; cin>>k;
-    vector<ll> a(n);
-    for(int i=0; i<n; i++) cin>>a[i];
+    vector<int> s;
+    for(int i=0; i<n; i++){
+        int x; cin>>x;
+        if(x != 0) s.emplace_back(x);
+    }
+    sort(all(s), greater<int>());
+    n = s.size();
 
-    vector<vector<ll>> dp(70, vector<ll>(2, -1));
-    dp[51][0] = 0;
-    for(int d=50; d>=0; d--){
-        ll base = (1LL << d);
-        int cnt1 = 0;
-        for(int i=0; i<n; i++){
-            if(base & a[i]) cnt1++;
-        }
+    int q; cin>>q;
+    while(q--){
+        int k; cin>>k;
 
-        if(dp[d+1][1] >= 0){
-            // 未満フラグが既に立っている
-            chmax(dp[d][1], dp[d+1][1] + base * max(cnt1, n - cnt1));
-        }
-
-        if(dp[d+1][0] >= 0){
-            if(k & base){
-                // 0 にして、未満フラグを立てる
-                chmax(dp[d][1], dp[d+1][0] + base * cnt1);
-
-                // 1 にして、未満フラグを立てない
-                chmax(dp[d][0], dp[d+1][0] + base * (n - cnt1));
-            }
-            else{
-                // 0 にせざるを得ず、未満フラグを立てられない
-                chmax(dp[d][0], dp[d+1][0] + base * cnt1);
-            }
-        }
+        cout << (k < n ? s[k] + 1 : 0) << endl;
     }
 
-    cout << max(dp[0][0], dp[0][1]) << endl;
-    
     return 0;
 }

@@ -46,46 +46,30 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n, k; cin>>n>>k;
-    vector<P> dt(n);
-    for(int i=0; i<n; i++){
-        int t, d; cin>>t>>d;
-        t--;
-        dt[i] = P(d, t);
-    }
-    sort(all(dt), greater<P>());
-
-    vector<bool> ate(n, false);
-    ll del = 0, kinds = 0;
-    priority_queue<int, vector<int>, greater<int>> pque;
-    for(int i=0; i<k; i++){
-        int d, t; tie(d, t) = dt[i];
-        del += d;
-        if(!ate[t]){
-            ate[t] = true;
-            kinds++;
-        }
-        else{
-            pque.emplace(d);
+    vector<string> s(3);
+    vector<vector<int>> alp(3, vector<int>(26, 0));
+    for(int i=0; i<3; i++){
+        cin>>s[i];
+        for(auto j:s[i]){
+            alp[i][j - 'A']++;
         }
     }
 
-    ll ans = del + kinds * kinds;
-    for(int i=k; i<n; i++){
-        if(!pque.size()) break;
-
-        int d, t; tie(d, t) = dt[i];
-        if(ate[t]) continue;
-        ate[t] = true;
-        
-        kinds++;
-        del -= pque.top(); pque.pop();
-        del += d;
-        
-        chmax(ans, del + kinds * kinds);
+    for(int i=0; i<26; i++){
+        for(int j=0; j<2; j++){
+            chmin(alp[j][i], alp[2][i]);
+        }
     }
 
-    cout << ans << endl;
+    int sum1 = 0, sum2 = 0;
+    for(int i=0; i<26; i++){
+        sum1 += alp[0][i];
+        sum2 += alp[1][i];
+    }
+
+    int n = s[0].size() / 2;
+    if(n <= sum1 && n <= sum2) cout << "YES" << endl;
+    else cout << "NO" << endl;
 
     return 0;
 }

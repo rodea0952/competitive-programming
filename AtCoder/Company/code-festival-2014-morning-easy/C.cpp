@@ -42,30 +42,55 @@ constexpr long long INF = 1e18;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
-vector<ll> len(60, 1), p(60, 1);
+vector<int> dijkstra(int s, vector<vector<P>> &G){
+    int n = G.size();
+    vector<int> dist(n, inf);
+    priority_queue<P, vector<P>, greater<P>> que;
+    dist[s] = 0;
+    que.emplace(0, s);
 
-ll solve(int n, ll x){
-    if(n == 0) return 1;
+    while(que.size()){
+        int ccost, cv;
+        tie(ccost, cv) = que.top(); que.pop();
 
-    if(x == 1) return 0;
-    else if(x <= 1 + len[n-1]) return solve(n - 1, x - 1);
-    else if(x == 2 + len[n-1]) return p[n-1] + 1;
-    else if(x <= 2 * (1 + len[n-1])) return p[n-1] + 1 + solve(n - 1, x - 2 - len[n-1]);
-    else return p[n];
+        if(dist[cv] < ccost) continue;
+
+        for(auto nxt : G[cv]){
+            int nv, ncost;
+            tie(nv, ncost) = nxt;
+            
+            if(dist[cv] + ncost < dist[nv]){
+                dist[nv] = dist[cv] + ncost;
+                que.emplace(dist[nv], nv);
+            }
+        }
+    }
+
+    return dist;
 }
 
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n; cin>>n;
-    ll x; cin>>x;
-    for(int i=0; i<n; i++){
-        len[i+1] = len[i] * 2 + 3;
-        p[i+1] = p[i] * 2 + 1;
+    int n, m, s, t; cin>>n>>m>>s>>t;
+    s--, t--;
+    vector<vector<P>> G(n);
+    for(int i=0; i<m; i++){
+        int x, y, d; cin>>x>>y>>d;
+        x--, y--;
+        G[x].emplace_back(y, d);
+        G[y].emplace_back(x, d);
     }
 
-    cout << solve(n, x) << endl;
+    int ans = -2;
+    for(int i=0; i<n; i++){
+        if(i == s || i == t) continue;
+        auto dist = dijkstra(i, G);
+        if(dist[s] == dist[t] && dist[s] != inf) ans = i;
+    }
+
+    cout << ans + 1 << endl;
 
     return 0;
 }

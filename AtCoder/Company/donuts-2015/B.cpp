@@ -46,44 +46,42 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n, k; cin>>n>>k;
-    vector<P> dt(n);
-    for(int i=0; i<n; i++){
-        int t, d; cin>>t>>d;
-        t--;
-        dt[i] = P(d, t);
+    int n, m; cin>>n>>m;
+    vector<int> a(n);
+    for(int i=0; i<n; i++) cin>>a[i];
+    vector<int> b(m), c(m);
+    vector<vector<int>> I(m, vector<int>(n));
+    for(int i=0; i<m; i++){
+        cin>>b[i]>>c[i];
+        for(int j=0; j<c[i]; j++) cin>>I[i][j], I[i][j]--;
     }
-    sort(all(dt), greater<P>());
 
-    vector<bool> ate(n, false);
-    ll del = 0, kinds = 0;
-    priority_queue<int, vector<int>, greater<int>> pque;
-    for(int i=0; i<k; i++){
-        int d, t; tie(d, t) = dt[i];
-        del += d;
-        if(!ate[t]){
-            ate[t] = true;
-            kinds++;
+    vector<int> perm(n, 0);
+    for(int i=0; i<9; i++) perm[i] = 1;
+    sort(all(perm));
+
+    int ans = 0;
+    do{
+        int sum = 0;
+        vector<bool> join(n, false);
+        for(int i=0; i<n; i++){
+            if(perm[i]){
+                sum += a[i];
+                join[i] = true;
+            }
         }
-        else{
-            pque.emplace(d);
+
+        for(int i=0; i<m; i++){
+            int cnt = 0;
+            for(int j=0; j<c[i]; j++){
+                cnt += join[I[i][j]];
+            }
+            if(3 <= cnt) sum += b[i];
         }
-    }
 
-    ll ans = del + kinds * kinds;
-    for(int i=k; i<n; i++){
-        if(!pque.size()) break;
+        chmax(ans, sum);
 
-        int d, t; tie(d, t) = dt[i];
-        if(ate[t]) continue;
-        ate[t] = true;
-        
-        kinds++;
-        del -= pque.top(); pque.pop();
-        del += d;
-        
-        chmax(ans, del + kinds * kinds);
-    }
+    }while(next_permutation(all(perm)));
 
     cout << ans << endl;
 

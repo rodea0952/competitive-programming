@@ -46,46 +46,25 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n, k; cin>>n>>k;
-    vector<P> dt(n);
-    for(int i=0; i<n; i++){
-        int t, d; cin>>t>>d;
-        t--;
-        dt[i] = P(d, t);
-    }
-    sort(all(dt), greater<P>());
+    string s; cin>>s;
 
-    vector<bool> ate(n, false);
-    ll del = 0, kinds = 0;
-    priority_queue<int, vector<int>, greater<int>> pque;
-    for(int i=0; i<k; i++){
-        int d, t; tie(d, t) = dt[i];
-        del += d;
-        if(!ate[t]){
-            ate[t] = true;
-            kinds++;
-        }
-        else{
-            pque.emplace(d);
+    if(s == "{}"){
+        cout << "dict" << endl;
+        return 0;
+    }
+
+    int depth = 0;
+    for(auto i:s){
+        if(i == '{') depth++;
+        else if(i == '}') depth--;
+
+        if(depth == 1 && i == ':'){
+            cout << "dict" << endl;
+            return 0;
         }
     }
 
-    ll ans = del + kinds * kinds;
-    for(int i=k; i<n; i++){
-        if(!pque.size()) break;
-
-        int d, t; tie(d, t) = dt[i];
-        if(ate[t]) continue;
-        ate[t] = true;
-        
-        kinds++;
-        del -= pque.top(); pque.pop();
-        del += d;
-        
-        chmax(ans, del + kinds * kinds);
-    }
-
-    cout << ans << endl;
+    cout << "set" << endl;
 
     return 0;
 }

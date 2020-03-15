@@ -1,29 +1,76 @@
-#include<bits/stdc++.h>
+#pragma GCC optimize("O3")
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <string>
+#include <cstring>
+#include <deque>
+#include <list>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <map>
+#include <set>
+#include <complex>
+#include <cmath>
+#include <limits>
+#include <cfloat>
+#include <climits>
+#include <ctime>
+#include <cassert>
+#include <numeric>
+#include <fstream>
+#include <functional>
+#include <bitset>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> P;
+using ll = long long;
+using P = pair<int, int>;
+using T = tuple<int, int, int>;
 
-int MOD=1e9+7;
-ll INF=1e18;
+template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
+template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 
-int dx[]={1, -1, 0, 0};
-int dy[]={0, 0, 1, -1};
+constexpr int MOD = 1e9 + 7;
+constexpr int inf = 1e9;
+constexpr long long INF = 1e18;
 
-int main(){
-    int n, m; cin>>n>>m;
-    bool is_prime=true;
-    for(int i=2; i<=sqrt(m); i++){
-        if(m%i == 0) is_prime=false;
-    }
+#define all(a) (a).begin(), (a).end()
 
-    if(is_prime) cout << 1 << endl;
-    else{
-        for(int i=n; i<=m; i++){
-            if(m%i == 0){
-                cout << m/i << endl;
-                return 0;
-            }
+int dx[] = {1, 0, -1, 0};
+int dy[] = {0, 1, 0, -1};
+
+vector<ll> divisor(ll n){
+    vector<ll> v;
+    for(ll i=1; i*i<=n; i++){
+        if(n % i == 0){
+            v.emplace_back(i);
+            v.emplace_back(n / i);
         }
     }
+
+    sort(v.begin(), v.end());
+    v.erase(unique(v.begin(), v.end()), v.end());
+
+    return v;
+}
+
+int main(){
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+
+    int n, m; cin>>n>>m;
+
+    auto div = divisor(m);
+
+    int ans = 1;
+    for(auto i : div){
+        if(n <= m / i) chmax(ans, (int)i);
+    }
+
+    cout << ans << endl;
+
+    return 0;
 }

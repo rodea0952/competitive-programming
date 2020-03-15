@@ -1,60 +1,113 @@
-#include <bits/stdc++.h>
-#define chmin(a, b) ((a)=min((a), (b)))
-#define chmax(a, b) ((a)=max((a), (b)))
-#define fs first
-#define sc second
-#define eb emplace_back
+#pragma GCC optimize("O3")
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <string>
+#include <cstring>
+#include <deque>
+#include <list>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <map>
+#include <set>
+#include <complex>
+#include <cmath>
+#include <limits>
+#include <cfloat>
+#include <climits>
+#include <ctime>
+#include <cassert>
+#include <numeric>
+#include <fstream>
+#include <functional>
+#include <bitset>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> P;
-typedef tuple<int, int, int> T;
+using ll = long long;
+using P = pair<int, int>;
+using T = tuple<int, int, int>;
 
-const ll MOD=1e9+7;
-const ll INF=1e18;
+template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
+template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 
-int dx[]={1, -1, 0, 0};
-int dy[]={0, 0, 1, -1};
+constexpr int MOD = 1e9 + 7;
+constexpr int inf = 1e9;
+constexpr long long INF = 1e18;
 
-int main(){
-    int n; cin>>n;
-    vector<int> cnt(110, 0);
-    for(int i=2; i<=n; i++){
-        int num=i;
-        for(int j=2; j<=i; j++){
-            while(num%j==0){
-                num/=j;
-                cnt[j]++;
-            }
-            if(num==1) break;
+#define all(a) (a).begin(), (a).end()
+
+int dx[] = {1, 0, -1, 0};
+int dy[] = {0, 1, 0, -1};
+
+vector<ll> prime_factorization(ll n){
+    vector<ll> v;
+    ll num = n;
+    for(ll i=2; i*i<=n; i++){
+        while(num % i == 0){
+            num /= i;
+            v.emplace_back(i);
         }
     }
 
-    ll ans=0;
-    for(int i=2; i<=n; i++){ // (74+1)
-        if(74<=cnt[i]) ans++;
+    if(num != 1){
+        v.emplace_back(num);
     }
 
-    ll A=0, B=0;
-    for(int i=2; i<=n; i++){ // (2+1)*(24+1)
-        if(24<=cnt[i]) B++;
-        if(2<=cnt[i]) A++;
-    }
-    ans+=B*(A-1);
+    return v;
+}
 
-    A=0, B=0;
-    for(int i=2; i<=n; i++){ // (4+1)*(14+1)
-        if(14<=cnt[i]) B++;
-        if(4<=cnt[i]) A++;
-    }
-    ans+=B*(A-1);
+int main(){
+    cin.tie(0);
+    ios::sync_with_stdio(false);
 
-    A=0, B=0;
-    for(int i=2; i<=n; i++){ // (2+1)*(4+1)*(4+1)
-        if(4<=cnt[i]) B++;
-        if(2<=cnt[i]) A++;
+    int n; cin>>n;
+    map<int, int> cnt;
+    for(int i=2; i<=n; i++){
+        auto v = prime_factorization(i);
+        for(auto j : v) cnt[j]++;
     }
-    ans+=B*(B-1)*(A-2)/2;
+
+    for(auto i : cnt) cnt[i.first]++;
+
+    int ans = 0;
+    // 1 * 75
+    for(auto i : cnt){
+        if(75 <= i.second) ans++;
+    }
+
+    // 3 * 25
+    for(auto i : cnt){
+        for(auto j : cnt){
+            if(i.first == j.first) continue;
+            if(3 <= i.second && 25 <= j.second) ans++;
+        }
+    }
+
+    // 5 * 15
+    for(auto i : cnt){
+        for(auto j : cnt){
+            if(i.first == j.first) continue;
+            if(5 <= i.second && 15 <= j.second) ans++;
+        }
+    }
+
+    // 3 * 5 * 5
+    for(auto i : cnt){
+        for(auto j : cnt){
+            for(auto k : cnt){
+                if(i.first == j.first) continue;
+                if(j.first == k.first) continue;
+                if(k.first == i.first) continue;
+                if(j.first > k.first) continue;
+                if(3 <= i.second && 5 <= j.second && 5 <= k.second) ans++;
+            }
+        }
+    }
 
     cout << ans << endl;
+
+    return 0;
 }

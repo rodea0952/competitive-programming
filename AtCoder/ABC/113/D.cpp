@@ -1,90 +1,104 @@
-#include<bits/stdc++.h>
+#pragma GCC optimize("O3")
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <string>
+#include <cstring>
+#include <deque>
+#include <list>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <map>
+#include <set>
+#include <complex>
+#include <cmath>
+#include <limits>
+#include <cfloat>
+#include <climits>
+#include <ctime>
+#include <cassert>
+#include <numeric>
+#include <fstream>
+#include <functional>
+#include <bitset>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> P;
-typedef tuple<int, int, int> T;
+using ll = long long;
+using P = pair<int, int>;
+using T = tuple<int, int, int>;
 
-int MOD=1e9+7;
-ll INF=1e18;
+template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
+template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 
-int dx[]={1, -1, 0, 0};
-int dy[]={0, 0, 1, -1};
+constexpr int MOD = 1e9 + 7;
+constexpr int inf = 1e9;
+constexpr long long INF = 1e18;
+
+#define all(a) (a).begin(), (a).end()
+
+int dx[] = {1, 0, -1, 0};
+int dy[] = {0, 1, 0, -1};
 
 int main(){
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+
     int h, w, k; cin>>h>>w>>k;
-    if(w==1){
+    k--;
+
+    if(w == 1){
         cout << 1 << endl;
         return 0;
     }
-    ll dp[110][10];
-    memset(dp, 0, sizeof(dp));
-    dp[0][1]=1;
-    for(int i=2; i<=w; i++) dp[0][i]=0;
 
-    for(int i=1; i<=h; i++){
-        for(int bit=0; bit<(1<<w-1); bit++){
-            bool can_make=true;
-            for(int k=0; k<w-1; k++){
-                if((1<<k)&bit && (1<<k+1)&bit) can_make=false;
+    vector<vector<ll>> dp(h+1, vector<ll>(w, 0));
+    dp[0][0] = 1;
+    for(int i=0; i<h; i++){
+        for(int bit=0; bit<(1<<(w-1)); bit++){
+            bool valid = true;
+            for(int j=0; j+1<w-1; j++){
+                if((bit & (1 << j)) && (bit & (1 << (j + 1)))) valid = false;
             }
 
-            if(can_make){
-                for(int k=w-2; k>=0; k--){
-                    if((1<<k)&bit){
-                        if(k==w-2){
-                            dp[i][1]+=(dp[i-1][2])%MOD;
-                            dp[i][2]+=(dp[i-1][1])%MOD;
-                        }
-                        else if(k==0){
-                            dp[i][w]+=(dp[i-1][w-1])%MOD;
-                            dp[i][w-1]+=(dp[i-1][w])%MOD;
-                        }
-                        else{
-                            dp[i][w-k]+=(dp[i-1][w-k-1])%MOD;
-                            dp[i][w-k-1]+=(dp[i-1][w-k])%MOD;
-                        }
-                    }
-                    else{
-                        if(w==3 && k-1>=0 && ((!((1<<k)&bit)) && (!((1<<k-1)&bit)))){
-                            dp[i][1]+=(dp[i-1][1])%MOD;
-                            dp[i][2]+=(dp[i-1][2])%MOD;
-                            dp[i][3]+=(dp[i-1][3])%MOD;
-                            k--;
-                            /*
-                            cout << bit << " " << k << endl;
-                            cout << i << "   " << dp[i][1] << " " << dp[i][2] << " " << dp[i][3] << endl;
-                            */
-                        }
-                        else if(k==w-2){
-                            if((!((1<<k)&bit)) && (!((1<<k-1)&bit))){
-                                dp[i][1]+=(dp[i-1][1])%MOD;
-                                dp[i][2]+=(dp[i-1][2])%MOD;
-                            }
-                            else dp[i][1]+=(dp[i-1][1])%MOD;
-                        }
-                        else if(k==0){
-                            dp[i][w]+=(dp[i-1][w])%MOD;
-                        }
-                        else{
-                            if((!((1<<k)&bit)) && (!((1<<k-1)&bit))){
-                                dp[i][w-k]+=(dp[i-1][w-k])%MOD;
-                            }
-                        }
-                    }
-                    for(int j=1; j<=w; j++) dp[i][j]%=MOD;
+            if(!valid) continue;
+
+            // 横棒があるとき
+            for(int j=0; j<w-1; j++){
+                if(bit & (1 << j)){
+                    // 左側に降りる
+                    dp[i+1][j] += dp[i][j+1];
+                    dp[i+1][j] %= MOD;
+
+                    // 右側に降りる
+                    dp[i+1][j+1] += dp[i][j];
+                    dp[i+1][j+1] %= MOD;
                 }
             }
+
+            // 横棒がないとき、下に流れる
+            if(!(bit & 1)){
+                dp[i+1][0] += dp[i][0];
+                dp[i+1][0] %= MOD;
+            }
+
+            for(int j=0; j+1<w-1; j++){
+                if(!(bit & (1 << j)) && !(bit & (1 << (j + 1)))){
+                    dp[i+1][j+1] += dp[i][j+1];
+                    dp[i+1][j+1] %= MOD;
+                }
+            }
+
+            if(!(bit & (1 << (w - 2)))){
+                dp[i+1][w-1] += dp[i][w-1];
+                dp[i+1][w-1] %= MOD;
+            }
         }
     }
 
-    /*
-    for(int i=0; i<=h; i++){
-        for(int j=1; j<=w; j++){
-            cout << dp[i][j] << " ";
-        }
-        cout << endl;
-    }
-    */
-    cout << dp[h][k]%MOD << endl;
+    cout << dp[h][k] << endl;
+
+    return 0;
 }

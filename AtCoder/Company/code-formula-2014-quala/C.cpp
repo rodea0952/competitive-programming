@@ -46,35 +46,40 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    string s; cin>>s;
-    int n = s.size();
-
-    vector<vector<ll>> dp(n+1, vector<ll>(4, 0));
-    dp[0][0] = 1;
+    int n, k; cin>>n>>k;
+    vector<vector<int>> a(n, vector<int>(k));
     for(int i=0; i<n; i++){
-        // 使わない
-        for(int j=0; j<4; j++){
-            if(s[i] == '?') dp[i+1][j] += dp[i][j] * 3;
-            else dp[i+1][j] += dp[i][j];
-            dp[i+1][j] %= MOD;
-        }
-
-        // 使う
-        if(s[i] == 'A' || s[i] == '?'){
-            dp[i+1][1] += dp[i][0];
-            dp[i+1][1] %= MOD;
-        }
-        if(s[i] == 'B' || s[i] == '?'){
-            dp[i+1][2] += dp[i][1];
-            dp[i+1][2] %= MOD;
-        }
-        if(s[i] == 'C' || s[i] == '?'){
-            dp[i+1][3] += dp[i][2];
-            dp[i+1][3] %= MOD;
-        }
+        for(int j=0; j<k; j++) cin>>a[i][j];
     }
 
-    cout << dp[n][3] << endl;
+    int rest = k;
+    vector<int> rank(n*k, 0);
+    vector<bool> passed(1000000, false);
+    for(int i=0; i<n; i++){
+        for(int j=0; j<k; j++){
+            rank[j * n + i] = a[i][j];
+        }
+
+        vector<int> ans;
+        int cnt = 0;
+        for(int j=0; j<n*k; j++){
+            if(passed[rank[j]]) continue;
+            if(++cnt > rest) break;
+            if(rank[j] > 0){
+                passed[rank[j]] = true;
+                ans.emplace_back(rank[j]);
+            }
+        }
+
+        sort(all(ans));
+        for(int j=0; j<ans.size(); j++){
+            if(j != ans.size() - 1) cout << ans[j] << " ";
+            else cout << ans[j];
+        }
+        cout << endl;
+
+        rest -= ans.size();
+    }
 
     return 0;
 }

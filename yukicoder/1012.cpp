@@ -42,60 +42,31 @@ constexpr long long INF = 1e18;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
-vector<bool> visited(100010, false);
-deque<int> ans;
-bool valid = false;
-
-void dfs(int cv, vector<vector<int>> &G){
-    ans.emplace_back(cv);
-    visited[cv] = true;
-    for(auto nv : G[cv]){
-        if(visited[nv]) continue;
-        if(valid) continue;
-
-        dfs(nv, G);
-    }
-
-    valid = true;
-    return ;
-}
-
-void rdfs(int cv, vector<vector<int>> &G){
-    ans.emplace_front(cv);
-    visited[cv] = true;
-    for(auto nv : G[cv]){
-        if(visited[nv]) continue;
-        if(valid) continue;
-
-        rdfs(nv, G);
-    }
-
-    valid = true;
-    return ;
-}
-
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n, m; cin>>n>>m;
-    vector<vector<int>> G(n);
-    for(int i=0; i<m; i++){
-        int a, b; cin>>a>>b;
-        a--, b--;
-        G[a].emplace_back(b);
-        G[b].emplace_back(a);
+    int n, q; cin>>n>>q;
+    vector<P> xw(n);
+    for(int i=0; i<n; i++) cin>>xw[i].first>>xw[i].second;
+    sort(all(xw));
+    vector<ll> x(n), w(n);
+    for(int i=0; i<n; i++){
+        x[i] = xw[i].first;
+        w[i] = xw[i].second;
     }
 
-    dfs(0, G);
-    ans.pop_front();
-    valid = false;
-    rdfs(0, G);
+    vector<ll> xwsum(n+1, 0), wsum(n+1, 0);
+    for(int i=0; i<n; i++){
+        xwsum[i + 1] = xwsum[i] + x[i] * w[i];
+        wsum[i + 1] = wsum[i] + w[i];
+    }
 
-    cout << ans.size() << endl;
-    for(auto i : ans){
-        if(i == ans.back()) cout << i + 1 << endl;
-        else cout << i + 1 << " ";
+    while(q--){
+        int X; cin>>X;
+        int idx = lower_bound(all(x), X) - x.begin();
+
+        cout << xwsum[n] - 2 * xwsum[idx] + 2 * X * wsum[idx] - X * wsum[n] << endl;
     }
 
     return 0;

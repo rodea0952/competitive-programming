@@ -42,61 +42,45 @@ constexpr long long INF = 1e18;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
-vector<bool> visited(100010, false);
-deque<int> ans;
-bool valid = false;
+int n, m;
 
-void dfs(int cv, vector<vector<int>> &G){
-    ans.emplace_back(cv);
-    visited[cv] = true;
-    for(auto nv : G[cv]){
-        if(visited[nv]) continue;
-        if(valid) continue;
+bool solve(ll t, vector<int> &x){
+    ll l = -1;
+    for(int i=0; i<m; i++){
+        if(x[i] <= l){
+            chmax(l, x[i] + t);
+        }
+        else{
+            if(x[i] - (l + 1) > t) return false;
 
-        dfs(nv, G);
+            // left -> right
+            ll r1 = t - x[i] + 2 * (l + 1);
+            // right -> left
+            ll r2 = (t + x[i] + l + 1) / 2;
+
+            chmax(l, max(r1, r2));
+        }
     }
 
-    valid = true;
-    return ;
-}
-
-void rdfs(int cv, vector<vector<int>> &G){
-    ans.emplace_front(cv);
-    visited[cv] = true;
-    for(auto nv : G[cv]){
-        if(visited[nv]) continue;
-        if(valid) continue;
-
-        rdfs(nv, G);
-    }
-
-    valid = true;
-    return ;
+    return n - 1 <= l;
 }
 
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n, m; cin>>n>>m;
-    vector<vector<int>> G(n);
-    for(int i=0; i<m; i++){
-        int a, b; cin>>a>>b;
-        a--, b--;
-        G[a].emplace_back(b);
-        G[b].emplace_back(a);
+    cin>>n>>m;
+    vector<int> x(m);
+    for(int i=0; i<m; i++) cin>>x[i], x[i]--;
+
+    ll ng = -1, ok = INF;
+    while(ok - ng > 1){
+        ll mid = (ok + ng) / 2;
+        if(solve(mid, x)) ok = mid;
+        else ng = mid;
     }
 
-    dfs(0, G);
-    ans.pop_front();
-    valid = false;
-    rdfs(0, G);
-
-    cout << ans.size() << endl;
-    for(auto i : ans){
-        if(i == ans.back()) cout << i + 1 << endl;
-        else cout << i + 1 << " ";
-    }
+    cout << ok << endl;
 
     return 0;
 }

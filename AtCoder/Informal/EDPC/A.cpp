@@ -1,31 +1,63 @@
-#include <bits/stdc++.h>
-#define chmin(a, b) ((a)=min((a), (b)))
-#define chmax(a, b) ((a)=max((a), (b)))
-#define fs first
-#define sc second
-#define eb emplace_back
+#pragma GCC optimize("O3")
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <string>
+#include <cstring>
+#include <deque>
+#include <list>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <map>
+#include <set>
+#include <complex>
+#include <cmath>
+#include <limits>
+#include <cfloat>
+#include <climits>
+#include <ctime>
+#include <cassert>
+#include <numeric>
+#include <fstream>
+#include <functional>
+#include <bitset>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> P;
-typedef tuple<int, int, int> T;
+using ll = long long;
+using P = pair<int, int>;
+using T = tuple<int, int, int>;
 
-const ll MOD=1e9+7;
-const ll INF=1e18;
+template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
+template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 
-int dx[]={1, -1, 0, 0};
-int dy[]={0, 0, 1, -1};
+constexpr int MOD = 1e9 + 7;
+constexpr int inf = 1e9;
+constexpr long long INF = 1e18;
+
+#define all(a) (a).begin(), (a).end()
+
+int dx[] = {1, 0, -1, 0};
+int dy[] = {0, 1, 0, -1};
 
 int main(){
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+
     int n; cin>>n;
-    vector<int> h(n+10);
+    vector<int> h(n);
     for(int i=0; i<n; i++) cin>>h[i];
 
-    vector<int> dp(n+10);
-    dp[1]=abs(h[0]-h[1]);
-    dp[2]=abs(h[0]-h[2]);
-    for(int i=3; i<n; i++){
-        dp[i]=min(dp[i-2]+abs(h[i-2]-h[i]), dp[i-1]+abs(h[i-1]-h[i]));
+    vector<ll> dp(n+1, INF);
+    dp[1] = 0;
+    for(int i=1; i<n; i++){
+        chmin(dp[i+1], dp[i] + abs(h[i] - h[i-1]));
+        if(i - 2 >= 0) chmin(dp[i+1], dp[i-1] + abs(h[i] - h[i-2]));
     }
-    cout << dp[n-1] << endl;
+
+    cout << dp[n] << endl;
+
+    return 0;
 }

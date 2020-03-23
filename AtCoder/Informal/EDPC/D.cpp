@@ -1,32 +1,64 @@
-#include <bits/stdc++.h>
-#define chmin(a, b) ((a)=min((a), (b)))
-#define chmax(a, b) ((a)=max((a), (b)))
-#define fs first
-#define sc second
-#define eb emplace_back
+#pragma GCC optimize("O3")
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <string>
+#include <cstring>
+#include <deque>
+#include <list>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <map>
+#include <set>
+#include <complex>
+#include <cmath>
+#include <limits>
+#include <cfloat>
+#include <climits>
+#include <ctime>
+#include <cassert>
+#include <numeric>
+#include <fstream>
+#include <functional>
+#include <bitset>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> P;
-typedef tuple<int, int, int> T;
+using ll = long long;
+using P = pair<int, int>;
+using T = tuple<int, int, int>;
 
-const ll MOD=1e9+7;
-const ll INF=1e18;
+template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
+template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 
-int dx[]={1, -1, 0, 0};
-int dy[]={0, 0, 1, -1};
+constexpr int MOD = 1e9 + 7;
+constexpr int inf = 1e9;
+constexpr long long INF = 1e18;
+
+#define all(a) (a).begin(), (a).end()
+
+int dx[] = {1, 0, -1, 0};
+int dy[] = {0, 1, 0, -1};
 
 int main(){
-    int n, w; cin>>n>>w;
-    vector<int> wei(n), val(n);
-    for(int i=0; i<n; i++) cin>>wei[i]>>val[i];
+    cin.tie(0);
+    ios::sync_with_stdio(false);
 
-    vector<vector<ll>> dp(n+10, vector<ll>(w+10, 0));
+    int n, W; cin>>n>>W;
+    vector<int> w(n), v(n);
+    for(int i=0; i<n; i++) cin>>w[i]>>v[i];
+
+    vector<vector<ll>> dp(n+1, vector<ll>(W+1, 0));
     for(int i=0; i<n; i++){
-        for(int j=0; j<=w; j++){
-            if(j-wei[i]>=0) dp[i+1][j]=max(dp[i][j], dp[i][j-wei[i]]+val[i]);
-            else dp[i+1][j]=dp[i][j];
+        for(int j=0; j<=W; j++){
+            chmax(dp[i+1][j], dp[i][j]);
+            if(j - w[i] >= 0) chmax(dp[i+1][j], dp[i][j-w[i]] + v[i]);
         }
     }
-    cout << dp[n][w] << endl;
+
+    cout << dp[n][W] << endl;
+
+    return 0;
 }

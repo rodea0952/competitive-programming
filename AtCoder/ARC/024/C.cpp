@@ -42,37 +42,35 @@ constexpr long long INF = 1e18;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
-int n;
-double dp[310][310][310];
-
-double rec(int x, int y, int z){
-    if(dp[x][y][z] != 0) return dp[x][y][z];
-    if(x == 0 && y == 0 && z == 0) return 0;
-
-    double ans = 0;
-    if(x > 0) ans += rec(x - 1, y, z) * x;
-    if(y > 0) ans += rec(x + 1, y - 1, z) * y;
-    if(z > 0) ans += rec(x, y + 1, z - 1) * z;
-    ans += n;
-    ans *= 1. / (x + y + z);
-
-    return dp[x][y][z] = ans;
-}
-
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    cin>>n;
-    vector<int> cnt(4, 0);
-    for(int i=0; i<n; i++){
-        int a; cin>>a;
-        cnt[a]++;
+    int n, k; cin>>n>>k;
+    string s; cin>>s;
+
+    map<vector<int>, int> r;
+    vector<int> cnt(26, 0);
+    
+    for(int i=0; i<k-1; i++){
+        cnt[s[i] - 'a']++;
     }
 
-    double ans = rec(cnt[1], cnt[2], cnt[3]);
+    bool valid = false;
+    for(int i=k-1; i<n; i++){
+        cnt[s[i] - 'a']++;
 
-    printf("%.10f\n", ans);
+        if(r.find(cnt) == r.end()){
+            r[cnt] = i;
+        }
+        else{
+            if(r[cnt] < i - k + 1) valid = true;
+        }
+
+        cnt[s[i - (k - 1)] - 'a']--;
+    }
+
+    cout << (valid ? "YES" : "NO") << endl;
 
     return 0;
 }

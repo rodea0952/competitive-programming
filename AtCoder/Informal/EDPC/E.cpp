@@ -1,38 +1,70 @@
-#include <bits/stdc++.h>
-#define chmin(a, b) ((a)=min((a), (b)))
-#define chmax(a, b) ((a)=max((a), (b)))
-#define fs first
-#define sc second
-#define eb emplace_back
+#pragma GCC optimize("O3")
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <string>
+#include <cstring>
+#include <deque>
+#include <list>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <map>
+#include <set>
+#include <complex>
+#include <cmath>
+#include <limits>
+#include <cfloat>
+#include <climits>
+#include <ctime>
+#include <cassert>
+#include <numeric>
+#include <fstream>
+#include <functional>
+#include <bitset>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> P;
-typedef tuple<int, int, int> T;
+using ll = long long;
+using P = pair<int, int>;
+using T = tuple<int, int, int>;
 
-const ll MOD=1e9+7;
-const ll INF=1e18;
+template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
+template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 
-int dx[]={1, -1, 0, 0};
-int dy[]={0, 0, 1, -1};
+constexpr int MOD = 1e9 + 7;
+constexpr int inf = 1e9;
+constexpr long long INF = 1e18;
+
+#define all(a) (a).begin(), (a).end()
+
+int dx[] = {1, 0, -1, 0};
+int dy[] = {0, 1, 0, -1};
 
 int main(){
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+
     int n, W; cin>>n>>W;
     vector<int> w(n), v(n);
     for(int i=0; i<n; i++) cin>>w[i]>>v[i];
 
-    vector<vector<ll>> dp(n+10, vector<ll>(n*1000+10, INF));
-    dp[0][0]=0;
+    vector<vector<ll>> dp(n+1, vector<ll>(100010, INF));
+    dp[0][0] = 0;
     for(int i=0; i<n; i++){
-        for(int j=0; j<=n*1000; j++){
-            if(j-v[i]>=0) dp[i+1][j]=min(dp[i][j], dp[i][j-v[i]]+w[i]);
-            else dp[i+1][j]=dp[i][j];
+        for(int j=0; j<=100000; j++){
+            chmin(dp[i+1][j], dp[i][j]);
+            if(j - v[i] >= 0) chmin(dp[i+1][j], dp[i][j-v[i]] + w[i]);
         }
     }
 
-    int ans=0;
-    for(int i=0; i<=n*1000; i++){
-        if(dp[n][i]<=W) chmax(ans, i);
+    int ans = 0;
+    for(int i=0; i<=100000; i++){
+        if(dp[n][i] <= W) ans = i;
     }
+
     cout << ans << endl;
+
+    return 0;
 }

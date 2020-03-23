@@ -1,41 +1,86 @@
-#include <bits/stdc++.h>
-#define chmin(a, b) ((a)=min((a), (b)))
-#define chmax(a, b) ((a)=max((a), (b)))
-#define fs first
-#define sc second
-#define eb emplace_back
+#pragma GCC optimize("O3")
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <string>
+#include <cstring>
+#include <deque>
+#include <list>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <map>
+#include <set>
+#include <complex>
+#include <cmath>
+#include <limits>
+#include <cfloat>
+#include <climits>
+#include <ctime>
+#include <cassert>
+#include <numeric>
+#include <fstream>
+#include <functional>
+#include <bitset>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> P;
-typedef tuple<int, int, int> T;
+using ll = long long;
+using P = pair<int, int>;
+using T = tuple<int, int, int>;
 
-const ll MOD=1e9+7;
-const ll INF=1e18;
+template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
+template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 
-int dx[]={1, -1, 0, 0};
-int dy[]={0, 0, 1, -1};
+constexpr int MOD = 1e9 + 7;
+constexpr int inf = 1e9;
+constexpr long long INF = 1e18;
+
+#define all(a) (a).begin(), (a).end()
+
+int dx[] = {1, 0, -1, 0};
+int dy[] = {0, 1, 0, -1};
 
 int main(){
-    string s, t; cin>>s>>t;
-    int n=s.size(), m=t.size();
+    cin.tie(0);
+    ios::sync_with_stdio(false);
 
-    vector<vector<string>> dp(2, vector<string>(m+1, ""));
-    int cur=0, nxt=1;
+    string s, t; cin>>s>>t;
+    int n = s.size(), m = t.size();
+    
+    vector<vector<int>> dp(n+1, vector<int>(m+1, 0));
     for(int i=0; i<n; i++){
         for(int j=0; j<m; j++){
-            if(s[i]==t[j]){
-                dp[nxt][j+1]=dp[cur][j]+s[i];
+            if(s[i] == t[j]){
+                chmax(dp[i+1][j+1], dp[i][j] + 1);
             }
-                
-            if(dp[nxt][j+1].size()<dp[cur][j+1].size()){
-                dp[nxt][j+1]=dp[cur][j+1];
-            }
-            if(dp[nxt][j+1].size()<dp[nxt][j].size()){
-                dp[nxt][j+1]=dp[nxt][j];
+            else{
+                chmax(dp[i+1][j+1], max(dp[i+1][j], dp[i][j+1]));
             }
         }
-        swap(cur, nxt);
     }
-    cout << dp[cur][m] << endl; 
+
+    int len = dp[n][m];
+    int y = n, x = m;
+    string ans = "";
+    while(len > 0){
+        if(dp[y][x] == dp[y-1][x]){
+            y--;
+        }
+        else if(dp[y][x] == dp[y][x-1]){
+            x--;
+        }
+        else{
+            y--, x--;
+            len--;
+            ans += s[y];
+        }
+    }
+
+    reverse(all(ans));
+
+    cout << ans << endl;
+
+    return 0;
 }

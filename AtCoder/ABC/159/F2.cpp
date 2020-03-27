@@ -33,7 +33,7 @@ using T = tuple<int, int, int>;
 template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
 template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 
-constexpr int MOD = 1e9 + 7;
+constexpr int MOD = 998244353;
 constexpr int inf = 1e9;
 constexpr long long INF = 1e18;
 
@@ -42,58 +42,39 @@ constexpr long long INF = 1e18;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
-vector<vector<ll>> mul(vector<vector<ll>> &A, vector<vector<ll>> &B){
-    vector<vector<ll>> C(A.size(), vector<ll>(B.size()));
-
-    for(int i=0; i<A.size(); i++){
-        for(int k=0; k<B.size(); k++){
-            for(int j=0; j<B[0].size(); j++){
-                (C[i][j] += (A[i][k] * B[k][j]) % MOD) %= MOD;
-            }
-        }
-    }
-    
-    return C;
-}
-
-vector<vector<ll>> pow(vector<vector<ll>> A, ll n){
-    vector<vector<ll>> B(A.size(), vector<ll>(A.size()));
-
-    for(int i=0; i<A.size(); i++){
-        B[i][i] = 1;
-    }
-
-    while(n > 0){
-        if(n & 1LL) B = mul(B, A);
-        A = mul(A, A);
-        n >>= 1LL;
-    }
-
-    return B;
-}
+ll dp[3010][6010][3];
 
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n; cin>>n;
-    ll k; cin>>k;
-    vector<vector<ll>> a(n, vector<ll>(n));
-    for(int i=0; i<n; i++){
-        for(int j=0; j<n; j++) cin>>a[i][j];
-    }
+    int n, s; cin>>n>>s;
+    vector<int> a(n);
+    for(int i=0; i<n; i++) cin>>a[i];
+    dp[0][0][0] = 1;
 
-    a = pow(a, k);
-
-    ll ans = 0;
     for(int i=0; i<n; i++){
-        for(int j=0; j<n; j++){
-            ans += a[i][j];
-            ans %= MOD;
+        for(int j=0; j<=s; j++){
+            dp[i+1][j][0] += dp[i][j][0];
+            dp[i+1][j][0] %= MOD;
+            dp[i+1][j+a[i]][1] += dp[i][j][0] * (i + 1);
+            dp[i+1][j+a[i]][1] %= MOD;
+            dp[i+1][j+a[i]][2] += dp[i][j][0] * (i + 1) * (n - i);
+            dp[i+1][j+a[i]][2] %= MOD;
+
+            dp[i+1][j][1] += dp[i][j][1];
+            dp[i+1][j][1] %= MOD;
+            dp[i+1][j+a[i]][1] += dp[i][j][1];
+            dp[i+1][j+a[i]][1] %= MOD;
+            dp[i+1][j+a[i]][2] += dp[i][j][1] * (n - i);
+            dp[i+1][j+a[i]][2] %= MOD;
+
+            dp[i+1][j][2] += dp[i][j][2];
+            dp[i+1][j][2] %= MOD;
         }
     }
 
-    cout << ans << endl;
+    cout << dp[n][s][2] << endl;
 
     return 0;
 }

@@ -1,8 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int M = 10000;
-
 // Fibonacci sequence
 
 vector<vector<ll>> mul(vector<vector<ll>> &A, vector<vector<ll>> &B){
@@ -11,7 +9,7 @@ vector<vector<ll>> mul(vector<vector<ll>> &A, vector<vector<ll>> &B){
     for(int i=0; i<A.size(); i++){
         for(int k=0; k<B.size(); k++){
             for(int j=0; j<B[0].size(); j++){
-                (C[i][j] += (A[i][k] * B[k][j]) % M) %= M;
+                (C[i][j] += (A[i][k] * B[k][j]) % MOD) %= MOD;
             }
         }
     }

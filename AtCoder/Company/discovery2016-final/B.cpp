@@ -46,27 +46,33 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    string k; cin>>k;
-    int d; cin>>d;
-    int n = k.size();
+    int n; cin>>n;
+    ll x; cin>>x;
+    vector<int> t(n), a(n);
+    for(int i=0; i<n; i++) cin>>t[i];
+    for(int i=0; i<n; i++) cin>>a[i];
 
-    vector<vector<vector<ll>>> dp(n+1, vector<vector<ll>>(d, vector<ll>(2, 0)));
-    dp[0][0][0] = 1;
+    int ng = 0, ok = 100001;
+    while(ok - ng > 1){
+        int mid = (ng + ok) / 2;
 
-    for(int i=0; i<n; i++){
-        int cur = k[i] - '0';
-        for(int pre=0; pre<d; pre++){
-            for(int flg=0; flg<2; flg++){
-                if(dp[i][pre][flg] == 0) continue;
-                for(int j=0; j<=(flg?9:cur); j++){
-                    dp[i+1][(pre+j)%d][flg||j<cur] += dp[i][pre][flg];
-                    dp[i+1][(pre+j)%d][flg||j<cur] %= MOD;
-                }
-            }
+        vector<vector<int>> T(100010);
+        for(int i=0; i<n; i++){
+            T[min(t[i], mid)].emplace_back(a[i]);
         }
+
+        ll sum = 0;
+        priority_queue<int> pque;
+        for(int i=mid; i>0; i--){
+            for(auto j:T[i]) pque.emplace(j);
+            if(pque.size()) sum += pque.top(), pque.pop();
+        }
+
+        if(x <= sum) ok = mid;
+        else ng = mid;
     }
 
-    cout << (dp[n][0][0] + dp[n][0][1] - 1 + MOD) % MOD << endl;
+    cout << (ok == 100001 ? -1 : ok) << endl;
 
     return 0;
 }

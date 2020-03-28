@@ -46,27 +46,33 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    string k; cin>>k;
-    int d; cin>>d;
-    int n = k.size();
-
-    vector<vector<vector<ll>>> dp(n+1, vector<vector<ll>>(d, vector<ll>(2, 0)));
-    dp[0][0][0] = 1;
-
+    int n; cin>>n;
+    vector<vector<int>> a(n, vector<int>(n));
     for(int i=0; i<n; i++){
-        int cur = k[i] - '0';
-        for(int pre=0; pre<d; pre++){
-            for(int flg=0; flg<2; flg++){
-                if(dp[i][pre][flg] == 0) continue;
-                for(int j=0; j<=(flg?9:cur); j++){
-                    dp[i+1][(pre+j)%d][flg||j<cur] += dp[i][pre][flg];
-                    dp[i+1][(pre+j)%d][flg||j<cur] %= MOD;
+        for(int j=0; j<n; j++) cin>>a[i][j];
+    }
+
+    vector<ll> score((1<<n), 0);
+    for(int bit=0; bit<(1<<n); bit++){
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                if((bit & (1 << i)) && (bit & (1 << j))){
+                    score[bit] += a[i][j];
                 }
             }
         }
+        score[bit] /= 2;
     }
 
-    cout << (dp[n][0][0] + dp[n][0][1] - 1 + MOD) % MOD << endl;
+    vector<ll> dp((1<<n), 0);
+    for(int bit=0; bit<(1<<n); bit++){
+        int unused = bit ^ ((1 << n) - 1);
+        for(int cur=unused; cur>0; cur=(cur-1)&unused){
+            chmax(dp[bit | cur], dp[bit] + score[cur]);
+        }
+    }
+
+    cout << dp[(1<<n)-1] << endl;
 
     return 0;
 }

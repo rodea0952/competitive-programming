@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include <iostream>
 #include <iomanip>
 #include <cstdio>
@@ -23,54 +24,67 @@
 #include <fstream>
 #include <functional>
 #include <bitset>
-#define chmin(a, b) ((a) = min((a), (b)))
-#define chmax(a, b) ((a) = max((a), (b)))
-#define fs first
-#define sc second
-#define eb emplace_back
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> P;
-typedef tuple<int, int, int> T;
+using ll = long long;
+using P = pair<int, int>;
+using T = tuple<int, int, int>;
 
-const ll MOD = 1e9 + 7;
-const ll INF = 1e18;
-const double pi = acos(-1);
-const double eps = 1e-10;
+template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
+template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
+
+constexpr int MOD = 1e9 + 7;
+constexpr int inf = 1e9;
+constexpr long long INF = 1e18;
+
+#define all(a) (a).begin(), (a).end()
 
 int dx[] = {1, 0, -1, 0};
-int dy[] = {0, -1, 0, 1};
+int dy[] = {0, 1, 0, -1};
 
 int main(){
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+
     int n; cin>>n;
     vector<int> a(n);
     for(int i=0; i<n; i++) cin>>a[i];
 
-    sort(a.begin(), a.end());
+    sort(all(a));
 
-    vector<P> seq;
-    vector<bool> used(n, false);
-    for(int i=n-2; i>0; i--){
-        if(0 <= a[i] && !used[i]){
-            used[i] = true;
-            seq.emplace_back(a[0], a[i]);
-            a[0] -= a[i];
-        }
-        else break;
-    }
-
-    for(int i=0; i<n-1; i++){
-        if(a[i] <= 0 && !used[i]){
-            used[i] = true;
-            seq.emplace_back(a[n-1], a[i]);
+    vector<P> ans;
+    if(a[n-1] <= 0){
+        for(int i=0; i<n-1; i++){
+            ans.emplace_back(a[n-1], a[i]);
             a[n-1] -= a[i];
         }
-        else break;
+    }
+    else if(0 <= a[0]){
+        for(int i=1; i<n-1; i++){
+            ans.emplace_back(a[0], a[i]);
+            a[0] -= a[i];
+        }
+        ans.emplace_back(a[n-1], a[0]);
+        a[n-1] -= a[0];
+    }
+    else{
+        for(int i=0; i<n-1; i++){
+            if(0 < a[i]){
+                ans.emplace_back(a[0], a[i]);
+                a[0] -= a[i];
+            }
+        }
+
+        for(int i=0; i<n; i++){
+            if(a[i] <= 0){
+                ans.emplace_back(a[n-1], a[i]);
+                a[n-1] -= a[i];
+            }
+        }
     }
 
-    cout << a[n-1] << endl;
-    for(auto i:seq){
-        cout << i.fs << " " << i.sc << endl;
-    }
+    cout << ans[n-2].first - ans[n-2].second << endl;
+    for(auto i:ans) cout << i.first << " " << i.second << endl;
+
+    return 0;
 }

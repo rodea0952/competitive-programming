@@ -46,32 +46,26 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    string s; cin>>s;
-    int n = s.size();
+    int a, b, c, d, e, f; cin>>a>>b>>c>>d>>e>>f;
 
-    int p = 0, g = 0, ans = 0;
-    for(int i=0; i<n; i++){
-        if(s[i] == 'g'){
-            if(p < g){
-                p++;
-                ans++;
-            }
-            else{
-                g++;
-            }
-        }
-        else{
-            if(p < g){
-                p++;
-            }
-            else{
-                g++;
-                ans--;
+    double ma = -1;
+    P ans;
+    for(int i=0; i<=f; i+=100*a){
+        for(int j=0; i+j<=f; j+=100*b){
+            for(int k=0; i+j+k<=f; k+=c){
+                for(int l=0; i+j+k+l<=f; l+=d){
+                    if((i + j) / 100 * e < k + l) continue;
+
+                    if(ma < 1. * (k + l) * 100 / (i + j + k + l)){
+                        ma = 1. * (k + l) * 100 / (i + j + k + l);
+                        ans = P(i + j + k + l, k + l);
+                    }
+                }
             }
         }
     }
 
-    cout << ans << endl;
+    cout << ans.first << " " << ans.second << endl;
 
     return 0;
 }

@@ -46,30 +46,28 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    string s; cin>>s;
-    int n = s.size();
-
-    int p = 0, g = 0, ans = 0;
+    int n; cin>>n;
+    vector<vector<int>> A(100010);
     for(int i=0; i<n; i++){
-        if(s[i] == 'g'){
-            if(p < g){
-                p++;
-                ans++;
-            }
-            else{
-                g++;
-            }
+        int a; cin>>a;
+        A[--a].emplace_back(i);
+    }
+
+    int cur = 0, ans = 0;
+    for(int i=0; i<100000; i++){
+        if(!A[i].size()) continue;
+        int idx = lower_bound(all(A[i]), cur) - A[i].begin();
+
+        if(A[i][0] < cur){
+            ans++;
+            cur = A[i][idx-1];
         }
         else{
-            if(p < g){
-                p++;
-            }
-            else{
-                g++;
-                ans--;
-            }
+            cur = A[i].back();
         }
     }
+
+    if(cur != 0) ans++;
 
     cout << ans << endl;
 

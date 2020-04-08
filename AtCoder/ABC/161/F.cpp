@@ -42,33 +42,36 @@ constexpr long long INF = 1e18;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
+vector<ll> divisor(ll n){
+    vector<ll> v;
+    for(ll i=1; i*i<=n; i++){
+        if(n % i == 0){
+            v.emplace_back(i);
+            v.emplace_back(n / i);
+        }
+    }
+
+    sort(v.begin(), v.end());
+    v.erase(unique(v.begin(), v.end()), v.end());
+
+    return v;
+}
+
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
     ll n; cin>>n;
+    
+    int ans = divisor(n - 1).size() - 1;
 
-    if(n == 2){
-        cout << 1 << endl;
-        return 0;
-    }
-
-    int ans = 2;
     for(ll i=2; i*i<=n; i++){
         ll num = n;
-        bool div = false;
-        while(num % i == 0){
-            num /= i;
-            div = true;
-        }
-
-        if(num % i == 1){
-            if(!div && (num / i != i)) ans += 2; 
-            else ans++;
-        }
+        while(num % i == 0) num /= i;
+        if(num % i == 1 && num != n) ans++;
     }
 
-    cout << ans << endl;
+    cout << ans + 1 << endl;
 
     return 0;
 }

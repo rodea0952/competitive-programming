@@ -46,32 +46,22 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int l; cin>>l;
+    int n; cin>>n;
+    vector<ll> a(n), b(n);
+    for(int i=0; i<n; i++) cin>>a[i]>>b[i];
+    ll sum = accumulate(all(a), 0LL);
 
-    int N = 0;
-    while(pow(2, N) <= l) N++;
-
-    vector<T> edge;
-    for(int i=1; i<N; i++){
-        int u = i, v = i + 1;
-        edge.emplace_back(u, v, pow(2, i - 1));
-        edge.emplace_back(u, v, 0);
+    ll mi = INF;
+    for(int i=0; i<n; i++){
+        if(a[i] > b[i]) chmin(mi, b[i]);
     }
 
-    int base = pow(2, N - 1);
-    for(int i=N-1; i>=1; i--){
-        if(l - pow(2, i - 1) >= base){
-            edge.emplace_back(i, N, l - pow(2, i - 1));
-            l -= pow(2, i - 1);
-        }
+    if(mi == INF){
+        cout << 0 << endl;
+        return 0;
     }
 
-    int M = edge.size();
-
-    cout << N << " " << M << endl;
-    for(auto i : edge){
-        cout << get<0>(i) << " " << get<1>(i) << " " << get<2>(i) << endl;
-    }
+    cout << sum - mi << endl;
 
     return 0;
 }

@@ -68,53 +68,43 @@ public:
     }
 };
 
-// refer to http://beet-aizu.hatenablog.com/entry/2019/03/12/171221
-template <typename T, typename E, typename F, typename G>
+template<typename T>
 struct SegmentTree{
+private:
+    using Func = function<T(T, T)>;
     int n;
-    F f;
-    G g;
-    T ti;
-    vector<T> dat;
-    SegmentTree(){};
-    SegmentTree(F f, G g, T ti) : f(f), g(g), ti(ti){}
+    vector<T> node;
+    Func func;
+    T init_v;
 
-    void init(int n_){    
-        n = 1;
-        while(n < n_) n <<= 1;
-        dat.assign(n << 1, ti);
-    }
-
-    void build(const vector<T> &v){
+public:
+    SegmentTree(vector<T> v, Func _func, T _init_v){
+        func = _func, init_v = _init_v;
         int sz = v.size();
-        init(sz);
-        for(int i=0; i<sz; i++) dat[n + i] = v[i];
-        for(int i=n-1; i>=0; i--) dat[i] = f(dat[(i << 1) | 0], dat[(i << 1) | 1]);
+        n = 1;
+        while(n < sz) n *= 2;
+        node.resize(2 * n, init_v);
+        for(int i=0; i<sz; i++) node[i+n-1] = v[i];
+        for(int i=n-2; i>=0; i--) node[i] = func(node[i*2+1], node[i*2+2]);
     }
 
-    void set_val(int k, T x){
-        k += n;
-        dat[k] = g(dat[k], x);
-        while(k >>= 1) dat[k] = f(dat[(k << 1) | 0], dat[(k << 1) | 1]);    
-    }
-
-    T query(int a,int b){
-        T vl = ti, vr = ti;
-        for(int l=a+n,r=b+n;l<r;l>>=1,r>>=1) {
-            if(l & 1) vl = f(vl, dat[l++]);
-            if(r & 1) vr = f(dat[--r], vr);
+    void update(int idx, T val){
+        idx += n - 1;
+        node[idx] = val;
+        while(idx > 0){
+            idx = (idx - 1) / 2;
+            node[idx] = func(node[idx*2+1], node[idx*2+2]);
         }
-        return f(vl, vr);
+    }
+
+    T query(int a, int b, int k = 0, int l = 0, int r = -1){
+        if (r < 0) r = n;
+        if (r <= a || b <= l) return init_v;
+        if (a <= l && r <= b) return node[k];
+        T lv = query(a, b, k * 2 + 1, l, (l + r) / 2);
+        T rv = query(a, b, k * 2 + 2, (l + r) / 2, r);
+        return func(lv, rv);
     }
 };
 
-using T = int;
-using E = int;
-auto f = [](T a, T b){
-    return a | b;
-};
-auto g = [](T a, E b){
-    return b;
-};
-T ti = 0;
-SegmentTree<T, E, decltype(f), decltype(g)> seg(f, g, ti);
+SegmentTree<ll> seg(a, [](const auto x, const auto y){return x + y;}, 0);

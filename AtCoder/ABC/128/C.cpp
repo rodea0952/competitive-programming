@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include <iostream>
 #include <iomanip>
 #include <cstdio>
@@ -23,70 +24,57 @@
 #include <fstream>
 #include <functional>
 #include <bitset>
-#define chmin(a, b) ((a)=min((a), (b)))
-#define chmax(a, b) ((a)=max((a), (b)))
-#define fs first
-#define sc second
-#define eb emplace_back
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> P;
-typedef tuple<int, int, int> T;
+using ll = long long;
+using P = pair<int, int>;
+using T = tuple<int, int, int>;
 
-const ll MOD=1e9+7;
-const ll INF=1e18;
-const double pi=acos(-1);
-const double eps=1e-10;
+template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
+template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 
-int dx[]={1, 0, -1, 0};
-int dy[]={0, -1, 0, 1};
+constexpr int MOD = 1e9 + 7;
+constexpr int inf = 1e9;
+constexpr long long INF = 1e18;
+
+#define all(a) (a).begin(), (a).end()
+
+int dx[] = {1, 0, -1, 0};
+int dy[] = {0, 1, 0, -1};
 
 int main(){
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+
     int n, m; cin>>n>>m;
-    vector<vector<int>> v(m);
+    vector<vector<int>> s(m);
     for(int i=0; i<m; i++){
         int k; cin>>k;
         for(int j=0; j<k; j++){
-            int s; cin>>s;
-            s--;
-            v[i].eb(s);
+            int S; cin>>S;
+            S--;
+            s[i].emplace_back(S);
         }
     }
 
     vector<int> p(m);
     for(int i=0; i<m; i++) cin>>p[i];
 
-    int sum = 0;
+    int ans = 0;
     for(int bit=0; bit<(1<<n); bit++){
-        vector<int> num;
-        for(int i=0; i<n; i++){
-            if((1 << i) & bit){
-                num.eb(i);
-            }
-        }
-
-        int ans = 0;
+        bool valid = true;
         for(int i=0; i<m; i++){
-            int cnt = 0;
-            for(int j=0; j<num.size(); j++){
-                for(int k=0; k<v[i].size(); k++){
-                    if(num[j] == v[i][k]){
-                        cnt++;
-                        break;
-                    }
-                }
+            int sum = 0;
+            for(int j=0; j<s[i].size(); j++){
+                if(bit & (1 << s[i][j])) sum++;
             }
-
-            if(cnt % 2 == p[i]){
-                ans++;
-            }
+            if(sum % 2 != p[i]) valid = false;
         }
 
-        if(ans == m){
-            sum++;
-        }
+        if(valid) ans++;
     }
 
-    cout << sum << endl;
+    cout << ans << endl;
+
+    return 0;
 }

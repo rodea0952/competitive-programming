@@ -18,7 +18,7 @@ typedef pair<Point, double> Circle;
 const double pi = acos(-1);
 
 // 角度 -> ラジアン
-double torad(int deg){
+double torad(double deg){
     return 1. * deg * pi / 180;
 }
 

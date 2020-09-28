@@ -46,33 +46,34 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n, m, k; cin>>n>>m>>k;
-    vector<vector<int>> a(n, vector<int>(m));
+    int n; cin>>n;
+    string s; cin>>s;
+
+    int ans = 0;
+    int allone = 0, allnine = 0;
     for(int i=0; i<n; i++){
-        for(int j=0; j<m; j++){
-            cin>>a[i][j];
+        if(s[i] == '3' || s[i] == '5' || s[i] == '7') ans++;
+        if(s[i] == '1') allone++;
+        if(s[i] == '9') allnine++;
+    }
+
+    int one = 0;
+    for(int i=0; i<n; i++){
+        if(s[i] == '1') one++;
+        if(s[i] == '9' && 0 < one){
+            one--;
+            allone--;
+            allnine--;
+            ans++;
         }
     }
 
-    vector<vector<bool>> dp(n+1, vector<bool>(k+1, false));
-    dp[0][0] = true;
+    ans += min(allnine / 2, allone);
+    allone -= min(allnine / 2, allone);
 
-    for(int i=0; i<n; i++){
-        for(int j=0; j<m; j++){
-            for(int pre=0; pre<k; pre++){
-                if(k < pre + a[i][j]) continue;
+    ans += allone / 2;
 
-                dp[i+1][pre+a[i][j]] = dp[i+1][pre+a[i][j]] | dp[i][pre];
-            }
-        }
-    }
-
-    int ans = inf;
-    for(int i=0; i<=k; i++){
-        if(dp[n][i]) chmin(ans, k - i);
-    }
-
-    cout << (ans == inf ? -1 : ans) << endl;
+    cout << ans << endl;
 
     return 0;
 }

@@ -46,36 +46,14 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    string s; cin>>s;
-    reverse(all(s));
-    s += '0';
-
-    int n = s.size();
-
-    vector<vector<int>> dp(n+1, vector<int>(2, inf));
-    dp[0][0] = 0;
+    int n; cin>>n;
+    vector<int> y(n);
+    for(int i=0; i<n; i++) cin>>y[i];
+    int ysum = accumulate(all(y), 0);
 
     for(int i=0; i<n; i++){
-        if(dp[i][1] != inf && s[i] == '0'){
-            chmin(dp[i+1][0], dp[i][1] + 1);
-            chmin(dp[i+1][1], dp[i][1] + 1);
-        }
-
-        if(dp[i][0] != inf && s[i] == '1'){
-            chmin(dp[i+1][0], dp[i][0] + 1); 
-            chmin(dp[i+1][1], dp[i][0] + 1);
-        }
-
-        if(dp[i][1] != inf && s[i] == '1'){
-            chmin(dp[i+1][1], dp[i][1]);
-        }
-
-        if(dp[i][0] != inf && s[i] == '0'){
-            chmin(dp[i+1][0], dp[i][0]);
-        }
+        cout << ysum - y[i] * (n - 1) << " \n"[i == n-1];
     }
-
-    cout << dp[n][0] << endl;
 
     return 0;
 }

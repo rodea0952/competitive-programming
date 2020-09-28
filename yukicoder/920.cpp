@@ -46,36 +46,15 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    string s; cin>>s;
-    reverse(all(s));
-    s += '0';
+    int x, y, z; cin>>x>>y>>z;
+    int gap = max(x, y) - min(x, y);
 
-    int n = s.size();
-
-    vector<vector<int>> dp(n+1, vector<int>(2, inf));
-    dp[0][0] = 0;
-
-    for(int i=0; i<n; i++){
-        if(dp[i][1] != inf && s[i] == '0'){
-            chmin(dp[i+1][0], dp[i][1] + 1);
-            chmin(dp[i+1][1], dp[i][1] + 1);
-        }
-
-        if(dp[i][0] != inf && s[i] == '1'){
-            chmin(dp[i+1][0], dp[i][0] + 1); 
-            chmin(dp[i+1][1], dp[i][0] + 1);
-        }
-
-        if(dp[i][1] != inf && s[i] == '1'){
-            chmin(dp[i+1][1], dp[i][1]);
-        }
-
-        if(dp[i][0] != inf && s[i] == '0'){
-            chmin(dp[i+1][0], dp[i][0]);
-        }
+    if(z < gap){
+        cout << min(x, y) + z << endl;
     }
-
-    cout << dp[n][0] << endl;
+    else{
+        cout << max(x, y) + (z - gap) / 2 << endl;
+    }
 
     return 0;
 }

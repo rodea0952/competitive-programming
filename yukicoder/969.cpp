@@ -46,36 +46,14 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    string s; cin>>s;
-    reverse(all(s));
-    s += '0';
+    int x; cin>>x;
 
-    int n = s.size();
-
-    vector<vector<int>> dp(n+1, vector<int>(2, inf));
-    dp[0][0] = 0;
-
-    for(int i=0; i<n; i++){
-        if(dp[i][1] != inf && s[i] == '0'){
-            chmin(dp[i+1][0], dp[i][1] + 1);
-            chmin(dp[i+1][1], dp[i][1] + 1);
-        }
-
-        if(dp[i][0] != inf && s[i] == '1'){
-            chmin(dp[i+1][0], dp[i][0] + 1); 
-            chmin(dp[i+1][1], dp[i][0] + 1);
-        }
-
-        if(dp[i][1] != inf && s[i] == '1'){
-            chmin(dp[i+1][1], dp[i][1]);
-        }
-
-        if(dp[i][0] != inf && s[i] == '0'){
-            chmin(dp[i+1][0], dp[i][0]);
-        }
+    if(x == 0 || x == 4 || x == 10){
+        cout << "Yes" << endl;
     }
-
-    cout << dp[n][0] << endl;
+    else{
+        cout << "No" << endl;
+    }
 
     return 0;
 }

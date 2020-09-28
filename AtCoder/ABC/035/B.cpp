@@ -47,35 +47,33 @@ int main(){
     ios::sync_with_stdio(false);
 
     string s; cin>>s;
-    reverse(all(s));
-    s += '0';
+    int t; cin>>t;
 
-    int n = s.size();
-
-    vector<vector<int>> dp(n+1, vector<int>(2, inf));
-    dp[0][0] = 0;
-
-    for(int i=0; i<n; i++){
-        if(dp[i][1] != inf && s[i] == '0'){
-            chmin(dp[i+1][0], dp[i][1] + 1);
-            chmin(dp[i+1][1], dp[i][1] + 1);
-        }
-
-        if(dp[i][0] != inf && s[i] == '1'){
-            chmin(dp[i+1][0], dp[i][0] + 1); 
-            chmin(dp[i+1][1], dp[i][0] + 1);
-        }
-
-        if(dp[i][1] != inf && s[i] == '1'){
-            chmin(dp[i+1][1], dp[i][1]);
-        }
-
-        if(dp[i][0] != inf && s[i] == '0'){
-            chmin(dp[i+1][0], dp[i][0]);
-        }
+    int lr = 0, ud = 0, q = 0;
+    for(auto i:s){
+        if(i == 'L') lr--;
+        else if(i == 'R') lr++;
+        else if(i == 'U') ud++;
+        else if(i == 'D') ud--;
+        else q++;
     }
 
-    cout << dp[n][0] << endl;
+    if(t == 1){
+        cout << abs(lr) + abs(ud) + q << endl;
+    }
+    else{
+        if(abs(lr) + abs(ud) <= q){
+            if((q - (abs(lr) + abs(ud))) % 2 == 0){
+                cout << 0 << endl;
+            }
+            else{
+                cout << 1 << endl;
+            }
+        }
+        else{
+            cout << abs(lr) + abs(ud) - q << endl;
+        }
+    }
 
     return 0;
 }

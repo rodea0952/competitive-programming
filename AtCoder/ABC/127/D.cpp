@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include <iostream>
 #include <iomanip>
 #include <cstdio>
@@ -23,53 +24,54 @@
 #include <fstream>
 #include <functional>
 #include <bitset>
-#define chmin(a, b) ((a)=min((a), (b)))
-#define chmax(a, b) ((a)=max((a), (b)))
-#define fs first
-#define sc second
-#define eb emplace_back
 using namespace std;
 
-typedef long long ll;
-typedef pair<ll, ll> P;
-typedef tuple<int, int, int> T;
+using ll = long long;
+using P = pair<int, int>;
+using T = tuple<int, int, int>;
 
-const ll MOD=1e9+7;
-const ll INF=1e18;
-const double pi=acos(-1);
-const double eps=1e-10;
+template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
+template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 
-int dx[]={1, 0, -1, 0};
-int dy[]={0, -1, 0, 1};
+constexpr int MOD = 1e9 + 7;
+constexpr int inf = 1e9;
+constexpr long long INF = 1e18;
+
+#define all(a) (a).begin(), (a).end()
+
+int dx[] = {1, 0, -1, 0};
+int dy[] = {0, 1, 0, -1};
 
 int main(){
-    ll n, m; cin>>n>>m;
-    priority_queue<P> que;
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+
+    int n, m; cin>>n>>m;
+    map<ll, ll, greater<ll>> cnt;
     for(int i=0; i<n; i++){
-        ll a; cin>>a;
-        que.push(P(a, 1LL));
+        int a; cin>>a;
+        cnt[a]++;
     }
 
     for(int i=0; i<m; i++){
-        ll b, c; cin>>b>>c;
-        que.push(P(c, b));
+        int b, c; cin>>b>>c;
+        cnt[c] += b;
     }
 
+    int sum = 0;
     ll ans = 0;
-    while(que.size()){
-        ll num, cnt;
-        tie(num, cnt) = que.top();
-        que.pop();
-
-        if(n - cnt >= 0){
-            ans += num * cnt;
+    for(auto i:cnt){
+        if(sum + i.second <= n){
+            ans += i.first * i.second;
+            sum += i.second;
         }
         else{
-            ans += num * max(n, 0LL);
+            ans += i.first * max(0, n - sum);
+            sum = n;
         }
-
-        n -= cnt;
     }
 
     cout << ans << endl;
+
+    return 0;
 }

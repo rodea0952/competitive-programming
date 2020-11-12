@@ -47,18 +47,20 @@ int main(){
     ios::sync_with_stdio(false);
 
     int n; cin>>n;
-    vector<tuple<string, int, int>> ans;
+    vector<int> deg(n, 0);
+    for(int i=0; i<n-1; i++){
+        int a, b; cin>>a>>b;
+        a--, b--;
+        deg[a]++;
+        deg[b]++;
+    }
+
+    int ans = 0;
     for(int i=0; i<n; i++){
-        string s; cin>>s;
-        int p; cin>>p;
-        ans.emplace_back(s, -p, i);
+        ans += max(deg[i] - 2, 0);
     }
 
-    sort(all(ans));
-
-    for(auto i:ans){
-        cout << get<2>(i) + 1 << endl;
-    }
+    cout << ans << endl;
 
     return 0;
 }

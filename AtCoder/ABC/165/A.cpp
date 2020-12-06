@@ -48,14 +48,9 @@ int main(){
 
     int k, a, b; cin>>k>>a>>b;
 
-    for(int i=a; i<=b; i++){
-        if(i % k == 0){
-            cout << "OK" << endl;
-            return 0;
-        }
-    }
+    int num = (b / k) * k;
 
-    cout << "NG" << endl;
+    cout << (a <= num ? "OK" : "NG") << endl;
 
     return 0;
 }

@@ -42,43 +42,26 @@ constexpr long long INF = 1e18;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
-ll modpow(ll a, ll b){
-    if(b == 0) return 1;
-    else if(b % 2 == 0){
-        ll d = modpow(a, b / 2) % MOD;
-        return (d * d) % MOD;
-    }
-    else{
-        return (a * modpow(a, b - 1)) % MOD;
-    }
-}
-
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n, k; cin>>n>>k;
+    int n; cin>>n;
 
-    vector<ll> cnt(k + 1, 0);
-    for(int i=k; i>=1; i--){
-        ll cur = 0;
-        cur += modpow(k / i, n);
-        for(int j=i*2; j<=k; j+=i){
-            cur -= cnt[j];
-            cur += MOD;
-            cur %= MOD;
+    int a = -1, b = -1, c = -1;
+    if(__builtin_popcount(n) >= 2){
+        for(int i=0; i<=30; i++){
+            if(n & (1 << i)){
+                a = (1 << i);
+                break;
+            }
         }
 
-        cnt[i] = cur;
+        b = (n ^ a);
+        c = n;
     }
 
-    ll ans = 0;
-    for(int i=1; i<=k; i++){
-        ans += cnt[i] * i;
-        ans %= MOD;
-    }
-
-    cout << ans << endl;
+    cout << a << " " << b << " " << c << endl;
 
     return 0;
 }

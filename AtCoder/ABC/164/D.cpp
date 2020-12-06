@@ -47,29 +47,22 @@ int main(){
     ios::sync_with_stdio(false);
 
     string s; cin>>s;
-    int n = s.size();
-
+    
     reverse(all(s));
 
-    ll ans = 0;
-
-    ll base = 1, cur = 0;
-    vector<ll> mod(n);
-    for(int i=0; i<n; i++){
-        mod[i] = ((s[i] - '0') * base + cur) % 2019;
-        cur = mod[i];
+    vector<int> mod(2019, 0);
+    mod[0]++;
+    ll cur = 0, base = 1;
+    for(auto i:s){
+        cur = (cur + (i - '0') * base) % 2019;
         base *= 10;
         base %= 2019;
+        mod[cur]++;
     }
 
-    vector<ll> cnt(2019, 0);
-    cnt[0]++;
-    for(int i=0; i<n; i++){
-        cnt[mod[i]]++;
-    }
-
+    ll ans = 0;
     for(int i=0; i<2019; i++){
-        ans += cnt[i] * (cnt[i] - 1) / 2;
+        ans += mod[i] * (mod[i] - 1) / 2;
     }
 
     cout << ans << endl;

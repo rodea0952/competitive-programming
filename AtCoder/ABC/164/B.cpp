@@ -48,10 +48,14 @@ int main(){
 
     int a, b, c, d; cin>>a>>b>>c>>d;
 
-    int ta = (c + b - 1) / b;
-    int ao = (a + d - 1) / d;
+    int turn = 0;
+    while(0 < a && 0 < c){
+        if(turn % 2 == 0) c -= b;
+        else a -= d;
+        turn++;
+    }
 
-    cout << (ta <= ao ? "Yes" : "No") << endl;
+    cout << (c <= 0 ? "Yes" : "No") << endl;
 
     return 0;
 }

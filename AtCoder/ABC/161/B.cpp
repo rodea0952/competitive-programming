@@ -49,14 +49,17 @@ int main(){
     int n, m; cin>>n>>m;
     vector<int> a(n);
     for(int i=0; i<n; i++) cin>>a[i];
-    int asum = accumulate(all(a), 0);
 
-    int cnt = 0;
+    int asum = accumulate(all(a), 0);
+    sort(all(a), greater<int>());
+
+    int ans = 0;
     for(int i=0; i<n; i++){
-        if(!(asum > a[i] * 4 * m)) cnt++;
+        if(1. * a[i] / asum < 1. / (4 * m)) break;
+        ans++;
     }
 
-    cout << (cnt >= m ? "Yes" : "No") << endl;
+    cout << (m <= ans ? "Yes" : "No") << endl;
 
     return 0;
 }

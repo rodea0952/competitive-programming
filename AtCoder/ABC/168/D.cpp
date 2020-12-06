@@ -57,20 +57,24 @@ int main(){
 
     queue<int> que;
     que.emplace(0);
+    vector<bool> visited(n, false);
+    visited[0] = true;
     vector<int> ans(n, -1);
     while(que.size()){
         int cv = que.front(); que.pop();
+        for(auto nv:G[cv]){
+            if(visited[nv]) continue;
 
-        for(auto nv : G[cv]){
-            if(ans[nv] == -1){
-                ans[nv] = cv;
-                que.emplace(nv);
-            }
+            visited[nv] = true;
+            ans[nv] = cv;
+            que.emplace(nv);
         }
     }
 
     cout << "Yes" << endl;
-    for(int i=1; i<n; i++) cout << ans[i] + 1 << endl;
+    for(int i=1; i<n; i++){
+        cout << ans[i] + 1 << endl;
+    }
 
     return 0;
 }

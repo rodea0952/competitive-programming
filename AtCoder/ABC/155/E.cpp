@@ -36,8 +36,8 @@ template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 constexpr int MOD = 1e9 + 7;
 constexpr int inf = 1e9;
 constexpr long long INF = 1e18;
-constexpr double pi = acos(-1);
-constexpr double EPS = 1e-10;
+
+#define all(a) (a).begin(), (a).end()
 
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
@@ -47,25 +47,19 @@ int main(){
     ios::sync_with_stdio(false);
 
     string s; cin>>s;
+
+    reverse(all(s));
+    s += '0';
     int n = s.size();
 
-    reverse(s.begin(), s.end());
-    s += '0';
-
-    vector<vector<int>> dp(n+2, vector<int>(2, inf));
+    vector<vector<int>> dp(n + 1, vector<int>(2, inf));
     dp[0][0] = 0;
-
-    for(int i=0; i<=n; i++){
-        int cur = s[i] - '0';
-
-        // 繰り上げる
-        chmin(dp[i+1][1], min(dp[i][1] + 10 - (cur + 1), dp[i][0] + 10 - cur));
-
-        // 繰り上げない
-        chmin(dp[i+1][0], min(dp[i][1] + (cur + 1), dp[i][0] + cur));
+    for(int i=0; i<n; i++){
+        dp[i + 1][0] = min(dp[i][0], dp[i][1] + 1) + (s[i] - '0');
+        dp[i + 1][1] = min(dp[i][0] + (10 - (s[i] - '0')), dp[i][1] + (9 - (s[i] - '0')));
     }
 
-    cout << chmin(dp[n][0], dp[n+1][0]) << endl;
+    cout << dp[n][0] << endl;
 
     return 0;
 }

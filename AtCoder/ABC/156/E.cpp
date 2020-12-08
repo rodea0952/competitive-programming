@@ -36,8 +36,8 @@ template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 constexpr int MOD = 1e9 + 7;
 constexpr int inf = 1e9;
 constexpr long long INF = 1e18;
-constexpr double pi = acos(-1);
-constexpr double EPS = 1e-10;
+
+#define all(a) (a).begin(), (a).end()
 
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
@@ -45,27 +45,26 @@ int dy[] = {0, 1, 0, -1};
 ll modpow(ll a, ll b){
     if(b == 0) return 1;
     else if(b % 2 == 0){
-        ll d = modpow(a, b/2) % MOD;
+        ll d = modpow(a, b / 2) % MOD;
         return (d * d) % MOD;
     }
     else{
-        return (a * modpow(a, b-1)) % MOD;
+        return (a * modpow(a, b - 1)) % MOD;
     }
 }
 
-const int MAX_N = 400010;
-
+const int MAX_N = 200010;
 ll fact[MAX_N], finv[MAX_N];
 ll comb(int n, int r){
     if(n < r || r < 0) return 0;
     return fact[n] * finv[n-r] % MOD * finv[r] % MOD;
 }
 
-void calc(int n){
+void comb_init(int n){
     fact[0] = finv[0] = 1;
     for(int i=1; i<=n; i++){
         fact[i] = (fact[i-1] * i) % MOD;
-        finv[i] = modpow(fact[i], MOD-2);
+        finv[i] = modpow(fact[i], MOD - 2);
     }
 }
 
@@ -73,31 +72,14 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    calc(400005);
-    ll n, k; cin>>n>>k;
+    int n, k; cin>>n>>k;
 
-    ll ans = comb(n - 1 + n, n);
+    comb_init(n + 10);
 
-    if(k >= n - 1){
-        cout << ans << endl;
-        return 0;
-    }
-
-    if(k == 1){
-        ll ans = comb(n, 2) * 2;
-        cout << ans % MOD << endl;
-        return 0;
-    }
-
-    // k < n - 1
-    for(int i=1; i<n-k; i++){
-        // i 箇所に集中する
-        ll cur = comb(n, i);
-        ll k = i;
-        cur *= comb(n - 1, k - 1);
-        cur %= MOD;
-        ans -= cur;
-        ans += MOD;
+    ll ans = 0;
+    for(int i=0; i<=min(k, n-1); i++){
+        ll cur = comb(n, i) * comb(n - 1, i) % MOD;
+        ans += cur;
         ans %= MOD;
     }
 

@@ -36,8 +36,8 @@ template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 constexpr int MOD = 1e9 + 7;
 constexpr int inf = 1e9;
 constexpr long long INF = 1e18;
-constexpr double pi = acos(-1);
-constexpr double EPS = 1e-10;
+
+#define all(a) (a).begin(), (a).end()
 
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
@@ -92,25 +92,33 @@ int main(){
     ios::sync_with_stdio(false);
 
     int n, m, k; cin>>n>>m>>k;
+
     UnionFind uf(n);
     vector<int> deg(n, 0);
     for(int i=0; i<m; i++){
-        int u, v; cin>>u>>v;
-        u--, v--;
-        deg[u]++, deg[v]++;
-        uf.unite(u, v);
+        int a, b; cin>>a>>b;
+        a--, b--;
+        deg[a]++;
+        deg[b]++;
+        uf.unite(a, b);
+    }
+
+    vector<int> ans(n, -1);
+    for(int i=0; i<n; i++){
+        ans[i] += uf.size(i);
+        ans[i] -= deg[i];
     }
 
     for(int i=0; i<k; i++){
-        int u, v; cin>>u>>v;
-        u--, v--;
-        if(uf.same(u, v)){
-            deg[u]++, deg[v]++;
+        int c, d; cin>>c>>d;
+        c--, d--;
+        if(uf.same(c, d)){
+            ans[c]--, ans[d]--;
         }
     }
 
     for(int i=0; i<n; i++){
-        cout << uf.size(i) - 1 - deg[i] << " \n"[i == n - 1];
+        cout << ans[i] << " \n"[i == n-1];
     }
 
     return 0;

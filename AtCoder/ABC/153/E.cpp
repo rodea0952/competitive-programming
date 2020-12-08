@@ -36,8 +36,8 @@ template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 constexpr int MOD = 1e9 + 7;
 constexpr int inf = 1e9;
 constexpr long long INF = 1e18;
-constexpr double pi = acos(-1);
-constexpr double EPS = 1e-10;
+
+#define all(a) (a).begin(), (a).end()
 
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
@@ -50,20 +50,17 @@ int main(){
     vector<int> a(n), b(n);
     for(int i=0; i<n; i++) cin>>a[i]>>b[i];
 
-    vector<vector<int>> dp(n+1, vector<int>(h+10001, inf));
-    for(int i=0; i<=n; i++) dp[i][0] = 0;
-
+    vector<vector<int>> dp(n + 1, vector<int>(h + 1, inf));
+    dp[0][0] = 0;
     for(int i=0; i<n; i++){
-        for(int j=0; j<=h+10000; j++){
-            chmin(dp[i+1][j], dp[i][j]);
-            if(j - a[i] >= 0) chmin(dp[i+1][j], dp[i+1][j - a[i]] + b[i]);
+        for(int j=0; j<=h; j++){
+            chmin(dp[i + 1][j], dp[i][j]);
+
+            chmin(dp[i + 1][min(j + a[i], h)], dp[i + 1][j] + b[i]);
         }
     }
 
-    int ans = inf;
-    for(int i=h; i<=h+10000; i++) chmin(ans, dp[n][i]);
-
-    cout << ans << endl;
+    cout << dp[n][h] << endl;
 
     return 0;
 }

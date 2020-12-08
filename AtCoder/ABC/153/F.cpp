@@ -36,8 +36,8 @@ template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 constexpr int MOD = 1e9 + 7;
 constexpr int inf = 1e9;
 constexpr long long INF = 1e18;
-constexpr double pi = acos(-1);
-constexpr double EPS = 1e-10;
+
+#define all(a) (a).begin(), (a).end()
 
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
@@ -105,36 +105,28 @@ int main(){
     ios::sync_with_stdio(false);
 
     ll n, d, a; cin>>n>>d>>a;
-    vector<pair<ll, ll>> xh(n);
-    for(int i=0; i<n; i++) cin>>xh[i].first>>xh[i].second;
+    vector<P> xh(n);
+    for(int i=0; i<n; i++){
+        cin>>xh[i].first>>xh[i].second;
+    }
 
-    sort(xh.begin(), xh.end());
+    sort(all(xh));
 
     vector<ll> x(n), h(n);
     for(int i=0; i<n; i++){
-        x[i] = xh[i].first;
-        h[i] = xh[i].second;
+        tie(x[i], h[i]) = xh[i];
     }
 
     LazySegmentTree seg(h);
-    ll base = 1;
-    while(base < n) base *= 2;
-
     ll ans = 0;
     for(int i=0; i<n; i++){
-        seg.add(i, i + 1, 0);
-        ll cur = seg.node[base-1+i];
-
-        if(cur <= 0) continue;
-
-        // x[i] + 2 * D の範囲を攻撃
-        ll ub = x[i] + 2 * d;
-        int ub_id = upper_bound(x.begin(), x.end(), ub) - x.begin();
-
-        // [i, ub_id)
-        ll need = (cur + a - 1) / a;
-        ans += need;
-        seg.add(i, ub_id, -need * a);
+        ll rest = seg.getsum(i, i + 1);
+        if(rest <= 0) continue;
+        ll r = x[i] + 2 * d;
+        int idx = upper_bound(all(x), r) - x.begin();
+        ll cnt = (rest + a - 1) / a;
+        ans += cnt;
+        seg.add(i, idx, -cnt * a);
     }
 
     cout << ans << endl;

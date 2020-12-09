@@ -36,8 +36,8 @@ template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 constexpr int MOD = 1e9 + 7;
 constexpr int inf = 1e9;
 constexpr long long INF = 1e18;
-constexpr double pi = acos(-1);
-constexpr double EPS = 1e-10;
+
+#define all(a) (a).begin(), (a).end()
 
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
@@ -62,11 +62,11 @@ vector<ll> prime_factorization(ll n){
 ll modpow(ll a, ll b){
     if(b == 0) return 1;
     else if(b % 2 == 0){
-        ll d = modpow(a, b/2) % MOD;
+        ll d = modpow(a, b / 2) % MOD;
         return (d * d) % MOD;
     }
     else{
-        return (a * modpow(a, b-1)) % MOD;
+        return (a * modpow(a, b - 1)) % MOD;
     }
 }
 
@@ -78,41 +78,41 @@ int main(){
     vector<int> a(n);
     for(int i=0; i<n; i++) cin>>a[i];
 
-    vector<int> num(1000010, -1);
-
+    vector<int> pcnt(1000010, 0);
     for(int i=0; i<n; i++){
         auto v = prime_factorization(a[i]);
 
-        vector<P> p4cnt;
+        vector<P> cur;
         for(int j=0; j<v.size(); j++){
-            int cnt = 1;
-            int cur = v[j];
-            while(j + 1 < v.size() && v[j] == v[j+1]){
-                cnt++;
-                j++;
+            int num = v[j];
+            int cnt = 0;
+            while(j < v.size() && num == v[j]){
+                cnt++, j++;
             }
-            p4cnt.emplace_back(cur, cnt);
+            j--;
+            cur.emplace_back(num, cnt);
         }
 
-        for(int j=0; j<p4cnt.size(); j++){
-            chmax(num[p4cnt[j].first], p4cnt[j].second);
+        for(auto j:cur){
+            chmax(pcnt[j.first], j.second);
         }
     }
 
-    ll ans = 1;
-    for(int i=2; i<=1000005; i++){
-        if(num[i] == -1) continue;
-        ans *= modpow(i, num[i]);
+    ll base = 1;
+    for(int i=1; i<=1000000; i++){
+        if(pcnt[i] != 0){
+            base *= modpow(i, pcnt[i]);
+            base %= MOD;
+        }
+    }
+
+    ll ans = 0;
+    for(int i=0; i<n; i++){
+        ans += base * modpow(a[i], MOD - 2);
         ans %= MOD;
     }
 
-    ll fians = 0;
-    for(int i=0; i<n; i++){
-        fians += (ans * modpow(a[i], MOD - 2));
-        fians %= MOD;
-    }
-
-    cout << fians << endl;
+    cout << ans << endl;
 
     return 0;
 }

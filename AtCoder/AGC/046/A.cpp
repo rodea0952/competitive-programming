@@ -46,21 +46,16 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n; cin>>n;
+    int x; cin>>x;
 
-    vector<vector<int>> cnt(10, vector<int>(10, 0));
-    for(int i=1; i<=n; i++){
-        string num = to_string(i);
-        cnt[num[0] - '0'][num[num.size() - 1] - '0']++;
+    int base = x;
+    for(int i=1; ; i++){
+        if(x % 360 == 0){
+            cout << i << endl;
+            return 0;
+        }
+        x += base;
     }
-
-    ll ans = 0;
-    for(int i=1; i<=n; i++){
-        string num = to_string(i);
-        ans += cnt[num[num.size() - 1] - '0'][num[0] - '0'];
-    }
-
-    cout << ans << endl;
 
     return 0;
 }

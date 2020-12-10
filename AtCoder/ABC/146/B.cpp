@@ -36,8 +36,8 @@ template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 constexpr int MOD = 1e9 + 7;
 constexpr int inf = 1e9;
 constexpr long long INF = 1e18;
-constexpr double pi = acos(-1);
-constexpr double EPS = 1e-10;
+
+#define all(a) (a).begin(), (a).end()
 
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
@@ -48,15 +48,11 @@ int main(){
 
     int n; cin>>n;
     string s; cin>>s;
-    int sz = s.size();
 
-    vector<char> ans(sz);
-    for(int i=0; i<sz; i++){
-        ans[i] = ((s[i] - 'A' + n) % 26) + 'A';
-    }
-
-    for(int i=0; i<sz; i++){
-        cout << ans[i];
+    for(int i=0; i<s.size(); i++){
+        int num = s[i] - 'A';
+        num = (num + n) % 26;
+        cout << char('A' + num);
     }
     cout << endl;
 

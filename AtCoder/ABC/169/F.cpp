@@ -33,7 +33,7 @@ using T = tuple<int, int, int>;
 template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
 template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 
-constexpr int MOD = 1e9 + 7;
+constexpr int MOD = 998244353;
 constexpr int inf = 1e9;
 constexpr long long INF = 1e18;
 
@@ -46,9 +46,26 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int a, b; cin>>a>>b;
+    int n, s; cin>>n>>s;
+    vector<int> a(n);
+    for(int i=0; i<n; i++) cin>>a[i];
 
-    cout << a * b << endl;
+    vector<vector<ll>> dp(n + 1, vector<ll>(s + 1, 0));
+    dp[0][0] = 1;
+
+    for(int i=0; i<n; i++){
+        for(int j=0; j<=s; j++){
+            dp[i + 1][j] += dp[i][j] * 2;
+            dp[i + 1][j] %= MOD;
+
+            if(j + a[i] <= s){
+                dp[i + 1][j + a[i]] += dp[i][j];
+                dp[i + 1][j + a[i]] %= MOD;
+            }
+        }
+    }
+
+    cout << dp[n][s] << endl;
 
     return 0;
 }

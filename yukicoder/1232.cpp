@@ -46,9 +46,12 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int a, b; cin>>a>>b;
+    int n; cin>>n;
+    while(n--){
+        ll p; cin>>p;
 
-    cout << a * b << endl;
+        cout << (p == 2 ? 2 : (p - 1) * (p - 1)) << endl;
+    }
 
     return 0;
 }

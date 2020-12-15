@@ -46,9 +46,24 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int a, b; cin>>a>>b;
+    int n; cin>>n;
+    vector<int> a(n), b(n);
+    for(int i=0; i<n; i++) cin>>a[i]>>b[i];
 
-    cout << a * b << endl;
+    sort(all(a));
+    sort(all(b));
+
+    int amid, bmid;
+    if(n % 2 == 0){
+        amid = a[n/2-1] + a[n/2];
+        bmid = b[n/2-1] + b[n/2];
+    }
+    else{
+        amid = a[n/2];
+        bmid = b[n/2];
+    }
+
+    cout << bmid - amid + 1 << endl;
 
     return 0;
 }

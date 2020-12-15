@@ -46,9 +46,12 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int a, b; cin>>a>>b;
+    ll a; cin>>a;
+    string b; cin>>b;
 
-    cout << a * b << endl;
+    ll num = a * ((b[0] - '0') * 100 + (b[2] - '0') * 10 + (b[3] - '0'));
+
+    cout << num / 100 << endl;
 
     return 0;
 }

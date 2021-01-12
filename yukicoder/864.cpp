@@ -46,19 +46,16 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n, d; cin>>n>>d;
-
-    vector<int> cnt(2*n*n+2, 0);
-    for(int x=1; x<=n; x++){
-        for(int y=1; y<=n; y++){
-            cnt[x * x + y * y]++;
-        }
-    }
+    ll n, k; cin>>n>>k;
 
     ll ans = 0;
-    for(int z=1; z<=n; z++){
-        for(int w=1; w<=n; w++){
-            ans += cnt[max(0, min(2 * n * n + 1, w * w + d - z * z))];
+    for(ll i=2; i*i<=k; i++){
+        if(k % i == 0){
+            ll ac = i, bd = k / i;
+            ll A = min(max(0LL, (n - ac / 2) * 2 + !(ac % 2)), ac - 1);
+            ll B = min(max(0LL, (n - bd / 2) * 2 + !(bd % 2)), bd - 1);
+            if(ac != bd) ans += 2 * A * B;
+            else ans += A * B;
         }
     }
 

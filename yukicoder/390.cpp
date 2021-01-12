@@ -1,3 +1,4 @@
+#pragma GCC optimize("O3")
 #include <iostream>
 #include <iomanip>
 #include <cstdio>
@@ -23,56 +24,60 @@
 #include <fstream>
 #include <functional>
 #include <bitset>
-#define chmin(a, b) ((a)=min((a), (b)))
-#define chmax(a, b) ((a)=max((a), (b)))
-#define fs first
-#define sc second
-#define eb emplace_back
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> P;
-typedef tuple<int, int, int> T;
+using ll = long long;
+using P = pair<int, int>;
+using T = tuple<int, int, int>;
 
-const ll MOD=1e9+7;
-const ll INF=1e18;
-const double pi=acos(-1);
-const double eps=1e-10;
+template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
+template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 
-int dx[]={1, 0, -1, 0};
-int dy[]={0, -1, 0, 1};
+constexpr int MOD = 1e9 + 7;
+constexpr int inf = 1e9;
+constexpr long long INF = 1e18;
 
-int main(){
-    int n; cin>>n;
-    vector<int> x(n);
-    for(int i=0; i<n; i++) cin>>x[i];
-    sort(x.begin(), x.end());
+#define all(a) (a).begin(), (a).end()
 
-    vector<int> dp(1000010, 0);
-    for(int i=0; i<n; i++){
-        dp[x[i]] = 1;
-    }
+int dx[] = {1, 0, -1, 0};
+int dy[] = {0, 1, 0, -1};
 
-    for(int i=1; i<1000005; i++){
-        if(dp[i]){
-            vector<int> v;
-            for(int j=1; j*j<=i; j++){
-                if(i % j == 0){
-                    v.eb(j);
-                    v.eb(i / j);
-                }
-            }
-
-            for(auto j:v){
-                if(i != j) dp[i] = max(dp[i], dp[j] + 1);
-            }
+vector<ll> divisor(ll n){
+    vector<ll> v;
+    for(ll i=1; i*i<=n; i++){
+        if(n % i == 0){
+            v.emplace_back(i);
+            v.emplace_back(n / i);
         }
     }
 
-    int ans=0;
-    for(int i=0; i<1000005; i++){
-        chmax(ans, dp[i]);
+    sort(v.begin(), v.end());
+    v.erase(unique(v.begin(), v.end()), v.end());
+
+    return v;
+}
+
+int main(){
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+
+    int n; cin>>n;
+    vector<int> x(n);
+    for(int i=0; i<n; i++) cin>>x[i];
+
+    sort(all(x));
+
+    vector<int> dp(1000010, 0);
+    for(int i=0; i<n; i++){
+        auto div = divisor(x[i]);
+        int ma = 0;
+        for(auto j:div){
+            chmax(ma, dp[j] + 1);
+        }
+        dp[x[i]] = ma;
     }
 
-    cout << ans << endl;
+    cout << *max_element(all(dp)) << endl;
+
+    return 0;
 }

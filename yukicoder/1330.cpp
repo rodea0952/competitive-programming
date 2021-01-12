@@ -46,23 +46,39 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n, d; cin>>n>>d;
+    int n, m, p; cin>>n>>m>>p;
+    vector<int> a(n);
+    for(int i=0; i<n; i++) cin>>a[i];
+    int amax = *max_element(all(a));
 
-    vector<int> cnt(2*n*n+2, 0);
-    for(int x=1; x<=n; x++){
-        for(int y=1; y<=n; y++){
-            cnt[x * x + y * y]++;
+    vector<int> pdivmax(40, -1);
+    for(int i=0; i<n; i++){
+        int cnt = 0;
+        while(a[i] % p == 0){
+            a[i] /= p;
+            cnt++;
+        }
+        chmax(pdivmax[cnt], a[i]);
+    }
+
+    vector<ll> dp(1010, 0);
+    // dp[i] := 操作回数 i 回のときの x の最大値
+    dp[0] = 1;
+    for(int i=0; i<1000; i++){
+        if(dp[i] == 0) continue;
+
+        if(m < dp[i] * amax){
+            cout << i + 1 << endl;
+            return 0;
+        }
+
+        for(int j=0; j<40; j++){
+            if(pdivmax[j] == -1) continue;
+            if(i + j + 1 <= 1000) chmax(dp[i + j + 1], dp[i] * pdivmax[j]);
         }
     }
 
-    ll ans = 0;
-    for(int z=1; z<=n; z++){
-        for(int w=1; w<=n; w++){
-            ans += cnt[max(0, min(2 * n * n + 1, w * w + d - z * z))];
-        }
-    }
-
-    cout << ans << endl;
+    cout << -1 << endl;
 
     return 0;
 }

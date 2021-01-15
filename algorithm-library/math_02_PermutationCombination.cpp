@@ -15,7 +15,12 @@ ll comb(int n, int r){
     return fact[n] * finv[n-r] % MOD * finv[r] % MOD;
 }
 
-void comb_init(int n){
+ll perm(int n, int r){
+    if(n < r || r < 0) return 0;
+    return comb(n, r) * fact[r] % MOD;
+} 
+
+void fact_init(int n){
     fact[0] = finv[0] = 1;
     for(int i=1; i<=n; i++){
         fact[i] = (fact[i-1] * i) % MOD;

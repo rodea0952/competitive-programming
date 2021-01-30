@@ -1,3 +1,48 @@
+#pragma GCC optimize("O3")
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <string>
+#include <cstring>
+#include <deque>
+#include <list>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <map>
+#include <set>
+#include <complex>
+#include <cmath>
+#include <limits>
+#include <cfloat>
+#include <climits>
+#include <ctime>
+#include <cassert>
+#include <numeric>
+#include <fstream>
+#include <functional>
+#include <bitset>
+using namespace std;
+
+using ll = long long;
+using P = pair<int, int>;
+using T = tuple<int, int, int>;
+
+template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
+template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
+
+constexpr int MOD = 998244353;
+constexpr int inf = 1e9;
+constexpr long long INF = 1e18;
+
+#define all(a) (a).begin(), (a).end()
+
+int dx[] = {1, 0, -1, 0};
+int dy[] = {0, 1, 0, -1};
+
+// https://qiita.com/ue_sho/items/1ee5c3e665c72c035880 より
 class mint{
 public:
     ll x;
@@ -60,4 +105,29 @@ mint modpow(mint a, ll b){
     else{
         return a * modpow(a, b - 1);
     }
+}
+
+int main(){
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+
+    int n, k; cin>>n>>k;
+    vector<int> l(k), r(k);
+    for(int i=0; i<k; i++) cin>>l[i]>>r[i];
+
+    vector<mint> dp(n + 1, 0);
+    vector<mint> dpsum(n + 1, 0);
+    dp[1] = 1, dpsum[1] = 1;
+    for(int i=1; i<n; i++){
+        for(int j=0; j<k; j++){
+            int cl = i - r[j], cr = i - l[j];
+            if(cr < 0) continue;
+            dp[i + 1] += dpsum[cr + 1] - dpsum[max(cl, 0)];
+        }
+        dpsum[i + 1] = dpsum[i] + dp[i + 1];
+    }
+
+    cout << dp[n] << endl;
+
+    return 0;
 }

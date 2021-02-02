@@ -1,0 +1,71 @@
+#pragma GCC optimize("O3")
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <string>
+#include <cstring>
+#include <deque>
+#include <list>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <map>
+#include <set>
+#include <complex>
+#include <cmath>
+#include <limits>
+#include <cfloat>
+#include <climits>
+#include <ctime>
+#include <cassert>
+#include <numeric>
+#include <fstream>
+#include <functional>
+#include <bitset>
+using namespace std;
+
+using ll = long long;
+using P = pair<int, int>;
+using T = tuple<int, int, int>;
+
+template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
+template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
+
+constexpr int MOD = 1e9 + 7;
+constexpr int inf = 1e9;
+constexpr long long INF = 1e18;
+
+#define all(a) (a).begin(), (a).end()
+
+int dx[] = {1, 0, -1, 0};
+int dy[] = {0, 1, 0, -1};
+
+int main(){
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+
+    int n; cin>>n;
+    vector<int> x(n), y(n);
+    for(int i=0; i<n; i++) cin>>x[i]>>y[i];
+
+    string ans = "No";
+    for(int i=0; i<n; i++){
+        for(int j=i+1; j<n; j++){
+            for(int k=j+1; k<n; k++){
+                ll dx1 = x[j] - x[i], dy1 = y[j] - y[i];
+                ll dx2 = x[k] - x[j], dy2 = y[k] - y[j];
+
+                if(dx2 * dy1 == dx1 * dy2){
+                    ans = "Yes";
+                    break;
+                }
+            }
+        }
+    }
+
+    cout << ans << endl;
+
+    return 0;
+}

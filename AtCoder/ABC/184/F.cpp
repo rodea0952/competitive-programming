@@ -47,28 +47,39 @@ int main(){
     ios::sync_with_stdio(false);
 
     int n; cin>>n;
-    ll k; cin>>k;
-    vector<int> a(n);
-    for(int i=0; i<n; i++) cin>>a[i], a[i]--;
+    ll t; cin>>t;
+    vector<ll> a(n);
+    for(int i=0; i<n; i++) cin>>a[i];
 
-    int logk = 0;
-    while((1LL << logk) <= k) logk++;
-
-    vector<vector<int>> doubling(logk, vector<int>(n));
-    // doubling[k][i] := 町 i から 2^k 回移動した町
-    for(int i=0; i<n; i++) doubling[0][i] = a[i];
-    for(int i=0; i+1<logk; i++){
-        for(int j=0; j<n; j++){
-            doubling[i + 1][j] = doubling[i][doubling[i][j]];
+    int lsz = n / 2, rsz = n - lsz;
+    vector<ll> lbit, rbit;
+    for(int bit=0; bit<(1<<lsz); bit++){
+        ll sum = 0;
+        for(int i=0; i<lsz; i++){
+            if(bit & (1 << i)) sum += a[i];
         }
+        lbit.emplace_back(sum);
     }
 
-    int cur = 0;
-    for(int i=0; i<logk; i++){
-        if(k & (1LL << i)) cur = doubling[i][cur];
+    for(int bit=0; bit<(1<<rsz); bit++){
+        ll sum = 0;
+        for(int i=0; i<rsz; i++){
+            if(bit & (1 << i)) sum += a[lsz + i];
+        }
+        rbit.emplace_back(sum);
     }
 
-    cout << cur + 1 << endl;
+    sort(all(rbit));
+
+    ll ans = 0;
+    for(auto i : lbit){
+        ll target = t - i;
+        if(target < 0) continue;
+        ll num = *prev(upper_bound(all(rbit), target));
+        chmax(ans, i + num);
+    }
+
+    cout << ans << endl;
 
     return 0;
 }

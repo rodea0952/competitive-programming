@@ -46,29 +46,21 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n; cin>>n;
-    ll k; cin>>k;
-    vector<int> a(n);
-    for(int i=0; i<n; i++) cin>>a[i], a[i]--;
+    int a, b, c; cin>>a>>b>>c;
 
-    int logk = 0;
-    while((1LL << logk) <= k) logk++;
-
-    vector<vector<int>> doubling(logk, vector<int>(n));
-    // doubling[k][i] := 町 i から 2^k 回移動した町
-    for(int i=0; i<n; i++) doubling[0][i] = a[i];
-    for(int i=0; i+1<logk; i++){
-        for(int j=0; j<n; j++){
-            doubling[i + 1][j] = doubling[i][doubling[i][j]];
+    vector<vector<vector<double>>> dp(101, vector<vector<double>>(101, vector<double>(101, 0)));
+    // dp[i][j][k] := 金貨、銀貨、銅貨が i, j, k 枚のときの操作回数の期待値
+    for(int i=99; i>=a; i--){
+        for(int j=99; j>=b; j--){
+            for(int k=99; k>=c; k--){
+                dp[i][j][k] += (dp[i + 1][j][k] + 1) * i / (i + j + k);
+                dp[i][j][k] += (dp[i][j + 1][k] + 1) * j / (i + j + k);
+                dp[i][j][k] += (dp[i][j][k + 1] + 1) * k / (i + j + k);
+            }
         }
     }
 
-    int cur = 0;
-    for(int i=0; i<logk; i++){
-        if(k & (1LL << i)) cur = doubling[i][cur];
-    }
-
-    cout << cur + 1 << endl;
+    cout << fixed << setprecision(10) << dp[a][b][c] << endl;
 
     return 0;
 }

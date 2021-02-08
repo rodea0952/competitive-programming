@@ -46,29 +46,9 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n; cin>>n;
-    ll k; cin>>k;
-    vector<int> a(n);
-    for(int i=0; i<n; i++) cin>>a[i], a[i]--;
+    int a, b, c, d; cin>>a>>b>>c>>d;
 
-    int logk = 0;
-    while((1LL << logk) <= k) logk++;
-
-    vector<vector<int>> doubling(logk, vector<int>(n));
-    // doubling[k][i] := 町 i から 2^k 回移動した町
-    for(int i=0; i<n; i++) doubling[0][i] = a[i];
-    for(int i=0; i+1<logk; i++){
-        for(int j=0; j<n; j++){
-            doubling[i + 1][j] = doubling[i][doubling[i][j]];
-        }
-    }
-
-    int cur = 0;
-    for(int i=0; i<logk; i++){
-        if(k & (1LL << i)) cur = doubling[i][cur];
-    }
-
-    cout << cur + 1 << endl;
+    cout << a * d - b * c << endl;
 
     return 0;
 }

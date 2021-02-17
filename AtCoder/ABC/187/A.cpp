@@ -46,32 +46,14 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n; cin>>n;
-    vector<vector<int>> a(n, vector<int>(n));
-    for(int i=0; i<n; i++){
-        for(int j=0; j<n; j++) cin>>a[i][j];
+    string a, b; cin>>a>>b;
+    int c = 0, d = 0;
+    for(int i=0; i<3; i++){
+        c += a[i] - '0';
+        d += b[i] - '0';
     }
 
-    vector<ll> cost(1 << n, 0);
-    for(int bit=0; bit<(1<<n); bit++){
-        for(int i=0; i<n; i++){
-            for(int j=0; j<i; j++){
-                if(!(bit & (1 << i))) continue;
-                if(!(bit & (1 << j))) continue;
-                cost[bit] += a[i][j];
-            }
-        }
-    }
-
-    vector<ll> dp(1 << n, 0);
-    for(int bit=0; bit<(1<<n); bit++){
-        int subset = bit ^ ((1 << n) - 1);
-        for(int sbit=subset; sbit>0; --sbit&=subset){
-            chmax(dp[bit | sbit], dp[bit] + cost[sbit]);
-        }
-    }
-
-    cout << dp[(1 << n) - 1] << endl;
+    cout << max(c, d) << endl;
 
     return 0;
 }

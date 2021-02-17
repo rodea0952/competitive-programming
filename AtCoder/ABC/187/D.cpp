@@ -47,31 +47,27 @@ int main(){
     ios::sync_with_stdio(false);
 
     int n; cin>>n;
-    vector<vector<int>> a(n, vector<int>(n));
+    vector<tuple<ll, int, int>> ab;
+    ll ao = 0;
     for(int i=0; i<n; i++){
-        for(int j=0; j<n; j++) cin>>a[i][j];
+        ll a, b; cin>>a>>b;
+        ab.emplace_back(2 * a + b, a, b);
+        ao += a;
     }
 
-    vector<ll> cost(1 << n, 0);
-    for(int bit=0; bit<(1<<n); bit++){
-        for(int i=0; i<n; i++){
-            for(int j=0; j<i; j++){
-                if(!(bit & (1 << i))) continue;
-                if(!(bit & (1 << j))) continue;
-                cost[bit] += a[i][j];
-            }
+    sort(all(ab));
+    reverse(all(ab));
+
+    ll ta = 0;
+    for(int i=0; i<n; i++){
+        ll num, a, b; tie(num, a, b) = ab[i];
+        ta += a + b;
+        ao -= a;
+        if(ao < ta){
+            cout << i + 1 << endl;
+            return 0;
         }
     }
-
-    vector<ll> dp(1 << n, 0);
-    for(int bit=0; bit<(1<<n); bit++){
-        int subset = bit ^ ((1 << n) - 1);
-        for(int sbit=subset; sbit>0; --sbit&=subset){
-            chmax(dp[bit | sbit], dp[bit] + cost[sbit]);
-        }
-    }
-
-    cout << dp[(1 << n) - 1] << endl;
 
     return 0;
 }

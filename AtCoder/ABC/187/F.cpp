@@ -46,28 +46,35 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n; cin>>n;
-    vector<vector<int>> a(n, vector<int>(n));
-    for(int i=0; i<n; i++){
-        for(int j=0; j<n; j++) cin>>a[i][j];
+    int n, m; cin>>n>>m;
+    vector<vector<bool>> G(n, vector<bool>(n, false));
+    for(int i=0; i<m; i++){
+        int a, b; cin>>a>>b; a--, b--;
+        G[a][b] = G[b][a] = true;
     }
 
-    vector<ll> cost(1 << n, 0);
+    vector<bool> is_clique(1 << n, true);
     for(int bit=0; bit<(1<<n); bit++){
+        vector<int> v;
         for(int i=0; i<n; i++){
+            if(bit & (1 << i)) v.emplace_back(i);
+        }
+
+        for(int i=0; i<v.size(); i++){
             for(int j=0; j<i; j++){
-                if(!(bit & (1 << i))) continue;
-                if(!(bit & (1 << j))) continue;
-                cost[bit] += a[i][j];
+                if(!G[v[i]][v[j]]) is_clique[bit] = false;
             }
         }
     }
 
-    vector<ll> dp(1 << n, 0);
+    vector<int> dp(1 << n, inf);
+    dp[0] = 0;
     for(int bit=0; bit<(1<<n); bit++){
+        if(dp[bit] == inf) continue;
         int subset = bit ^ ((1 << n) - 1);
         for(int sbit=subset; sbit>0; --sbit&=subset){
-            chmax(dp[bit | sbit], dp[bit] + cost[sbit]);
+            if(!is_clique[sbit]) continue;
+            chmin(dp[bit | sbit], dp[bit] + 1);
         }
     }
 

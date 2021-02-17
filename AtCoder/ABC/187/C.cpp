@@ -47,31 +47,21 @@ int main(){
     ios::sync_with_stdio(false);
 
     int n; cin>>n;
-    vector<vector<int>> a(n, vector<int>(n));
-    for(int i=0; i<n; i++){
-        for(int j=0; j<n; j++) cin>>a[i][j];
+    map<string, P> cnt;
+    while(n--){
+        string s; cin>>s;
+        if(s[0] == '!') cnt[s.substr(1)].second = 1;
+        else cnt[s].first = 1;
     }
 
-    vector<ll> cost(1 << n, 0);
-    for(int bit=0; bit<(1<<n); bit++){
-        for(int i=0; i<n; i++){
-            for(int j=0; j<i; j++){
-                if(!(bit & (1 << i))) continue;
-                if(!(bit & (1 << j))) continue;
-                cost[bit] += a[i][j];
-            }
+    for(auto i : cnt){
+        if(i.second.first && i.second.second){
+            cout << i.first << endl;
+            return 0;
         }
     }
 
-    vector<ll> dp(1 << n, 0);
-    for(int bit=0; bit<(1<<n); bit++){
-        int subset = bit ^ ((1 << n) - 1);
-        for(int sbit=subset; sbit>0; --sbit&=subset){
-            chmax(dp[bit | sbit], dp[bit] + cost[sbit]);
-        }
-    }
-
-    cout << dp[(1 << n) - 1] << endl;
+    cout << "satisfiable" << endl;
 
     return 0;
 }

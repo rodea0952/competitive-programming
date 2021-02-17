@@ -42,36 +42,50 @@ constexpr long long INF = 1e18;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
+vector<int> depth(200010, 0);
+vector<ll> imos(200010, 0);
+void dfs(int cv, int pv, vector<vector<int>> &G){
+    for(auto nv : G[cv]){
+        if(nv == pv) continue;
+        depth[nv] = depth[cv] + 1;
+        imos[nv] += imos[cv];
+        dfs(nv, cv, G);
+    }
+}
+
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
     int n; cin>>n;
-    vector<vector<int>> a(n, vector<int>(n));
+    vector<int> a(n - 1), b(n - 1);
+    vector<vector<int>> G(n);
+    for(int i=0; i<n-1; i++){
+        cin>>a[i]>>b[i]; a[i]--, b[i]--;
+        G[a[i]].emplace_back(b[i]);
+        G[b[i]].emplace_back(a[i]);
+    }
+
+    dfs(0, -1, G);
+
+    int q; cin>>q;
+    while(q--){
+        int t, e, x; cin>>t>>e>>x; e--;
+        if(t == 1){
+            if(depth[a[e]] < depth[b[e]]) imos[b[e]] -= x, imos[0] += x;
+            else imos[a[e]] += x;
+        }
+        else{
+            if(depth[a[e]] < depth[b[e]]) imos[b[e]] += x;
+            else imos[a[e]] -= x, imos[0] += x;
+        }
+    }
+
+    dfs(0, -1, G);
+
     for(int i=0; i<n; i++){
-        for(int j=0; j<n; j++) cin>>a[i][j];
+        cout << imos[i] << endl;
     }
-
-    vector<ll> cost(1 << n, 0);
-    for(int bit=0; bit<(1<<n); bit++){
-        for(int i=0; i<n; i++){
-            for(int j=0; j<i; j++){
-                if(!(bit & (1 << i))) continue;
-                if(!(bit & (1 << j))) continue;
-                cost[bit] += a[i][j];
-            }
-        }
-    }
-
-    vector<ll> dp(1 << n, 0);
-    for(int bit=0; bit<(1<<n); bit++){
-        int subset = bit ^ ((1 << n) - 1);
-        for(int sbit=subset; sbit>0; --sbit&=subset){
-            chmax(dp[bit | sbit], dp[bit] + cost[sbit]);
-        }
-    }
-
-    cout << dp[(1 << n) - 1] << endl;
 
     return 0;
 }

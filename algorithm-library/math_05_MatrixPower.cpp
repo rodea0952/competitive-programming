@@ -2,7 +2,7 @@
 using namespace std;
 
 // Fibonacci sequence
-
+// 掛ける順番に注意
 vector<vector<ll>> mul(vector<vector<ll>> &A, vector<vector<ll>> &B){
     vector<vector<ll>> C(A.size(), vector<ll>(B.size()));
 

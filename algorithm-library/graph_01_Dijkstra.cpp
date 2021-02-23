@@ -1,22 +1,22 @@
-vector<int> dijkstra(int s, vector<vector<P>> &G){
+vector<long long> dijkstra(int s, vector<vector<pair<int, long long>>> &G){
     int n = G.size();
-    vector<int> dist(n, inf);
-    priority_queue<P, vector<P>, greater<P>> que;
-    dist[s] = 0;
+    vector<long long> dist(n, 1e18);
+    priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<pair<long long, int>>> que;
     que.emplace(0, s);
 
     while(que.size()){
-        int ccost, cv;
+        long long ccost;
+        int cv; 
         tie(ccost, cv) = que.top(); que.pop();
-
         if(dist[cv] < ccost) continue;
 
         for(auto nxt : G[cv]){
-            int nv, ncost;
+            int nv;
+            long long ncost;
             tie(nv, ncost) = nxt;
             
-            if(dist[cv] + ncost < dist[nv]){
-                dist[nv] = dist[cv] + ncost;
+            if(ccost + ncost < dist[nv]){
+                dist[nv] = ccost + ncost;
                 que.emplace(dist[nv], nv);
             }
         }

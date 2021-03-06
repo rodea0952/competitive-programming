@@ -63,8 +63,8 @@ public:
         fx = _fx, fa = _fa, fm = _fm, fp = _fp, ex = _ex, em = _em;
         int sz = v.size();
         n = 1; while(n < sz) n *= 2;
-        dat.resize(2 * n, ex);
-        lazy.resize(2 * n, em);
+        dat.resize(n * 2, ex);
+        lazy.resize(n * 2, em);
         for(int i=0; i<sz; i++) dat[i + n - 1] = v[i];
         for(int i=n-2; i>=0; i--) dat[i] = fx(dat[i * 2 + 1], dat[i * 2 + 2]);
     }
@@ -73,8 +73,8 @@ public:
         if(lazy[k] == em) return ;
 
         if(k < n - 1){
-            lazy[2 * k + 1] = fm(lazy[k * 2 + 1], lazy[k]);
-            lazy[2 * k + 2] = fm(lazy[k * 2 + 2], lazy[k]);
+            lazy[k * 2 + 1] = fm(lazy[k * 2 + 1], lazy[k]);
+            lazy[k * 2 + 2] = fm(lazy[k * 2 + 2], lazy[k]);
         }
 
         dat[k] = fa(dat[k], fp(lazy[k], len));
@@ -115,25 +115,24 @@ int main(){
 
     using X = ll;
     using M = ll;
-    vector<X> a(n, (1LL << 31) - 1);
-    auto fx = [](X x, X y) -> X {return min(x, y);};
+    vector<X> a(n, 0);
+    auto fx = [](X x, X y) -> X {return x + y;};
     auto fa = [](X x, M y) -> X {return y;};
     auto fm = [](M x, M y) -> M {return y;};
-    auto fp = [](M x, ll y) -> M {return x;};
-    X ex = INF;
+    auto fp = [](M x, ll y) -> M {return x * y;};
+    X ex = 0;
     M em = INF;
     LazySegmentTree<X, M> seg(a, fx, fa, fm, fp, ex, em);
 
     while(q--){
         int op; cin>>op;
         if(op == 0){
-            int x; cin>>x;
-            ll y; cin>>y;
-            seg.update(x, x + 1, y);
+            int s, t, x; cin>>s>>t>>x;
+            seg.update(s, t + 1, x);
         }
         else{
-            int x, y; cin>>x>>y;
-            cout << seg.query(x, y + 1) << endl;
+            int s, t; cin>>s>>t;
+            cout << seg.query(s, t + 1) << endl;
         }
     }
 

@@ -115,25 +115,25 @@ int main(){
 
     using X = ll;
     using M = ll;
-    vector<X> a(n, (1LL << 31) - 1);
-    auto fx = [](X x, X y) -> X {return min(x, y);};
-    auto fa = [](X x, M y) -> X {return y;};
-    auto fm = [](M x, M y) -> M {return y;};
-    auto fp = [](M x, ll y) -> M {return x;};
-    X ex = INF;
-    M em = INF;
+    vector<X> a(n, 0);
+    auto fx = [](X x, X y) -> X {return x + y;};
+    auto fa = [](X x, M y) -> X {return x + y;};
+    auto fm = [](M x, M y) -> M {return x + y;};
+    auto fp = [](M x, ll y) -> M {return x * y;};
+    X ex = 0;
+    M em = 0;
     LazySegmentTree<X, M> seg(a, fx, fa, fm, fp, ex, em);
 
     while(q--){
         int op; cin>>op;
         if(op == 0){
-            int x; cin>>x;
-            ll y; cin>>y;
-            seg.update(x, x + 1, y);
+            int s, t; cin>>s>>t; s--, t--;
+            ll x; cin>>x;
+            seg.update(s, t + 1, x);
         }
         else{
-            int x, y; cin>>x>>y;
-            cout << seg.query(x, y + 1) << endl;
+            int i; cin>>i; i--;
+            cout << seg.query(i, i + 1) << endl;
         }
     }
 

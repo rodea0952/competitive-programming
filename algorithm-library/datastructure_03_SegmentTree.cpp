@@ -1,110 +1,58 @@
-// Range Minumum Query
-class SegmentTree{
-public:
-    int n;
-    vector<ll> node;
+/*
+Range Minumum Query
+using X = ll;
+using M = ll;
+vector<X> a(n, INF);
+auto fx = [](X x, X y) -> X {return min(x, y);};
+auto fa = [](X x, M y) -> X {return y;};
+X ex = INF;
+SegmentTree<X, M> seg(a, fx, fa, ex);
 
-    SegmentTree(vector<ll> v){
+Range Sum Query
+using X = ll;
+using M = ll;
+vector<X> a(n, 0);
+auto fx = [](X x, X y) -> X {return x + y;};
+auto fa = [](X x, M y) -> X {return x + y;};
+X ex = 0;
+SegmentTree<X, M> seg(a, fx, fa, ex);
+*/
+
+template <typename X, typename M>
+class SegmentTree{
+    using FX = function<X(X, X)>;
+    using FA = function<X(X, M)>;
+    int n;
+    FX fx;
+    FA fa;
+    X ex;
+    vector<X> dat;
+
+public:
+    SegmentTree(vector<X> v, FX _fx, FA _fa, X _ex){
+        fx = _fx, fa = _fa, ex = _ex;
         int sz = v.size();
         n = 1; while(n < sz) n *= 2;
-        node.resize(2*n-1, INF);
-        for(int i=0; i<sz; i++) node[i+n-1] = v[i];
-        for(int i=n-2; i>=0; i--) node[i] = min(node[2*i+1], node[2*i+2]);
+        dat.resize(n*2, ex);
+        for(int i=0; i<sz; i++) dat[i+n-1] = v[i];
+        for(int i=n-2; i>=0; i--) dat[i] = fx(dat[i*2+1], dat[i*2+2]);
     }
 
-    void update(int x, ll val){
-        x += (n - 1);
-        node[x] = val;
-        while(0 < x){
-            x = (x - 1) / 2;
-            node[x] = min(node[2*x+1], node[2*x+2]);
+    void update(int i, X val){
+        i += n - 1;
+        dat[i] = fa(dat[i], val);
+        while(i > 0){
+            i = (i - 1) / 2;
+            dat[i] = fx(dat[i*2+1], dat[i*2+2]);
         }
     }
 
-    ll getmin(int a, int b, int k=0, int l=0, int r=-1){
-        if(r < 0) r = n;
-        if(r <= a || b <= l) return INF;
-        if(a <= l && r <= b) return node[k];
-
-        ll vl = getmin(a, b, 2*k+1, l, (l+r)/2);
-        ll vr = getmin(a, b, 2*k+2, (l+r)/2, r);
-        
-        return min(vl, vr);
-    }
-};
-
-// Range Sum Query
-class SegmentTree{
-public:
-    int n;
-    vector<ll> node;
-
-    SegmentTree(vector<ll> v) {
-        int sz = v.size();
-        n = 1; while(n < sz) n *= 2;
-        node.resize(2*n-1, 0);
-        for(int i=0; i<sz; i++) node[i+n-1] = v[i];
-        for(int i=n-2; i>=0; i--) node[i] = node[i*2+1] + node[i*2+2];
-    }
-
-    void add(int x, ll val){
-        x += (n - 1);
-        node[x] += val;
-        while(0 < x){
-            x = (x - 1) / 2;
-            node[x] = node[2*x+1] + node[2*x+2];
-        }
-    }
-
-    ll getsum(int a, int b, int k=0, int l=0, int r=-1){
-        if(r < 0) r = n;
-        if(b <= l || r <= a) return 0;
-        if(a <= l && r <= b) return node[k];
-
-        ll vl = getsum(a, b, 2*k+1, l, (l+r)/2);
-        ll vr = getsum(a, b, 2*k+2, (l+r)/2, r);
-
-        return vl + vr;
-    }
-};
-
-template<typename T>
-struct SegmentTree{
-private:
-    using Func = function<T(T, T)>;
-    int n;
-    vector<T> node;
-    Func func;
-    T init_v;
-
-public:
-    SegmentTree(vector<T> v, Func _func, T _init_v){
-        func = _func, init_v = _init_v;
-        int sz = v.size();
-        n = 1;
-        while(n < sz) n *= 2;
-        node.resize(2 * n, init_v);
-        for(int i=0; i<sz; i++) node[i+n-1] = v[i];
-        for(int i=n-2; i>=0; i--) node[i] = func(node[i*2+1], node[i*2+2]);
-    }
-
-    void update(int idx, T val){
-        idx += n - 1;
-        node[idx] = val;
-        while(idx > 0){
-            idx = (idx - 1) / 2;
-            node[idx] = func(node[idx*2+1], node[idx*2+2]);
-        }
-    }
-
-    T query(int a, int b, int k = 0, int l = 0, int r = -1){
+    X query(int a, int b, int k=0, int l=0, int r=-1){
         if (r < 0) r = n;
-        if (r <= a || b <= l) return init_v;
-        if (a <= l && r <= b) return node[k];
-        T lv = query(a, b, k * 2 + 1, l, (l + r) / 2);
-        T rv = query(a, b, k * 2 + 2, (l + r) / 2, r);
-        return func(lv, rv);
+        if (r <= a || b <= l) return ex;
+        if (a <= l && r <= b) return dat[k];
+        X lv = query(a, b, k*2+1, l, (l+r)/2);
+        X rv = query(a, b, k*2+2, (l+r)/2, r);
+        return fx(lv, rv);
     }
 };
-
-SegmentTree<ll> seg(a, [](const auto x, const auto y){return x + y;}, 0);

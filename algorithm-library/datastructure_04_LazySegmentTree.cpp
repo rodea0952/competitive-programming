@@ -1,120 +1,114 @@
-// Range Add Query and Range Sum Query
-class LazySegmentTree{
-public:
-    int n;
-    vector<ll> node, lazy;
+/*
+Range Minimum Query and Range Update Query
+using X = ll;
+using M = ll;
+vector<X> a(n, INF);
+auto fx = [](X x, X y) -> X {return min(x, y);};
+auto fa = [](X x, M y) -> X {return y;};
+auto fm = [](M x, M y) -> M {return y;};
+auto fp = [](M x, ll y) -> M {return x;};
+X ex = INF;
+M em = INF;
+LazySegmentTree<X, M> seg(a, fx, fa, fm, fp, ex, em);
 
-    LazySegmentTree(vector<ll> v){
+Range Sum Query and Range Add Query
+using X = ll;
+using M = ll;
+vector<X> a(n, 0);
+auto fx = [](X x, X y) -> X {return x + y;};
+auto fa = [](X x, M y) -> X {return x + y;};
+auto fm = [](M x, M y) -> M {return x + y;};
+auto fp = [](M x, ll y) -> M {return x * y;};
+X ex = 0;
+M em = 0;
+LazySegmentTree<X, M> seg(a, fx, fa, fm, fp, ex, em);
+
+Range Minimum Query and Range Add Query
+using X = ll;
+using M = ll;
+vector<X> a(n, 0);
+auto fx = [](X x, X y) -> X {return min(x, y);};
+auto fa = [](X x, M y) -> X {return x + y;};
+auto fm = [](M x, M y) -> M {return x + y;};
+auto fp = [](M x, ll y) -> M {return x;};
+X ex = INF;
+M em = 0;
+LazySegmentTree<X, M> seg(a, fx, fa, fm, fp, ex, em);
+
+Range Sum Query and Range Update Query
+using X = ll;
+using M = ll;
+vector<X> a(n, 0);
+auto fx = [](X x, X y) -> X {return x + y;};
+auto fa = [](X x, M y) -> X {return y;};
+auto fm = [](M x, M y) -> M {return y;};
+auto fp = [](M x, ll y) -> M {return x * y;};
+X ex = 0;
+M em = INF;
+LazySegmentTree<X, M> seg(a, fx, fa, fm, fp, ex, em);
+*/
+
+template <typename X, typename M>
+class LazySegmentTree{
+    using FX = function<X(X, X)>;
+    using FA = function<X(X, M)>;
+    using FM = function<M(M, M)>;
+    using FP = function<M(M, int)>;
+    int n;
+    FX fx;
+    FA fa;
+    FM fm;
+    FP fp;
+    X ex;
+    M em;
+    vector<X> dat;
+    vector<M> lazy;
+
+public:
+    LazySegmentTree(vector<X> v, FX _fx, FA _fa, FM _fm, FP _fp, X _ex, M _em){
+        fx = _fx, fa = _fa, fm = _fm, fp = _fp, ex = _ex, em = _em;
         int sz = v.size();
         n = 1; while(n < sz) n *= 2;
-        node.resize(2*n-1, 0);
-        lazy.resize(2*n-1, 0);
-        for(int i=0; i<sz; i++) node[i+n-1] = v[i];
-        for(int i=n-2; i>=0; i--) node[i] = node[2*i+1] + node[2*i+2];
+        dat.resize(n*2, ex);
+        lazy.resize(n*2, em);
+        for(int i=0; i<sz; i++) dat[i+n-1] = v[i];
+        for(int i=n-2; i>=0; i--) dat[i] = fx(dat[i*2+1], dat[i*2+2]);
     }
 
-    void eval(int k, int l, int r){
-        if(lazy[k] != 0){
-            node[k] += lazy[k];
+    void eval(int k, int len){
+        if(lazy[k] == em) return ;
 
-            if(r - l > 1){
-                lazy[2*k+1] += lazy[k] / 2;
-                lazy[2*k+2] += lazy[k] / 2;
-            }
-
-            lazy[k] = 0;
+        if(k < n - 1){
+            lazy[k*2+1] = fm(lazy[k*2+1], lazy[k]);
+            lazy[k*2+2] = fm(lazy[k*2+2], lazy[k]);
         }
+
+        dat[k] = fa(dat[k], fp(lazy[k], len));
+        lazy[k] = em;
     }
 
-    void add(int a, int b, ll x, int k=0, int l=0, int r=-1){
+    void update(int a, int b, M x, int k=0, int l=0, int r=-1){
         if(r < 0) r = n;
-
-        eval(k, l, r);
-
-        if(b <= l || r <= a) return ;
-
+        eval(k, r - l);
         if(a <= l && r <= b){
-            lazy[k] += (r - l) * x;
-            eval(k, l, r);
+            lazy[k] = fm(lazy[k], x);
+            eval(k, r - l);
         }
-        else{
-            add(a, b, x, 2*k+1, l, (l+r)/2);
-            add(a, b, x, 2*k+2, (l+r)/2, r);
-            node[k] = node[2*k+1] + node[2*k+2];
+        else if(a < r && l < b){
+            update(a, b, x, k*2+1, l, (l+r)/2);
+            update(a, b, x, k*2+2, (l+r)/2, r);
+            dat[k] = fx(dat[k*2+1], dat[k*2+2]);
         }
     }
 
-    ll getsum(int a, int b, int k=0, int l=0, int r=-1){
+    X query(int a, int b, int k=0, int l=0, int r=-1){
         if(r < 0) r = n;
-        if(b <= l || r <= a) return 0;
-
-        eval(k, l, r);
-        if(a <= l && r <= b) return node[k];
-        ll vl = getsum(a, b, 2*k+1, l, (l+r)/2);
-        ll vr = getsum(a, b, 2*k+2, (l+r)/2, r);
-        return vl + vr;
-    }
-};
-
-// Range Minimum Query and Range Update Query
-class LazySegmentTree{
-public:
-    int n;
-    vector<ll> node, lazy;
-    vector<bool> lazyFlag;
-
-    LazySegmentTree(vector<ll> v){
-        int sz = v.size();
-        n = 1; while(n < sz) n *= 2;
-        node.resize(2*n-1);
-        lazy.resize(2*n-1, INF);
-        lazyFlag.resize(2*n-1, false);
-        for(int i=0; i<sz; i++) node[i+n-1] = v[i];
-        for(int i=n-2; i>=0; i--) node[i] = min(node[2*i+1], node[2*i+2]);
-    }
-
-    void eval(int k, int l, int r){
-        if(lazyFlag[k]){
-            node[k] = lazy[k];
-
-            if(r - l > 1){
-                lazy[2*k+1] = lazy[2*k+2] = lazy[k];
-                lazyFlag[2*k+1] = lazyFlag[2*k+2] = true;
-            }
-
-            lazyFlag[k] = false;
-        }
-    }
-
-    void update(int a, int b, ll x, int k=0, int l=0, int r=-1){
-        if(r < 0) r = n;
-
-        eval(k, l, r);
-
-        if(b <= l || r <= a) return ;
-
-        if(a <= l && r <= b){
-            lazy[k] = x;
-            lazyFlag[k] = true;
-            eval(k, l, r);
-        }
-        else{
-            update(a, b, x, 2*k+1, l, (l+r)/2);
-            update(a, b, x, 2*k+2, (l+r)/2, r);
-            node[k] = min(node[2*k+1], node[2*k+2]);
-        }
-    }
-
-    ll find(int a, int b, int k=0, int l=0, int r=-1){
-        if(r < 0) r = n;
+        if(r <= a || b <= l) return ex;
         
-        eval(k, l, r);
-        
-        if(b <= l || r <= a) return INF;
-
-        if(a <= l && r <= b) return node[k];
-        ll vl = find(a, b, 2*k+1, l, (l+r)/2);
-        ll vr = find(a, b, 2*k+2, (l+r)/2, r);
-        return min(vl, vr);
+        eval(k, r - l);
+        if(a <= l && r <= b) return dat[k];
+        X vl = query(a, b, k*2+1, l, (l+r)/2);
+        X vr = query(a, b, k*2+2, (l+r)/2, r);
+        return fx(vl, vr);
     }
 };

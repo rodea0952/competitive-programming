@@ -127,13 +127,13 @@ int main(){
     while(q--){
         int op; cin>>op;
         if(op == 0){
-            int x; cin>>x;
-            ll y; cin>>y;
-            seg.update(x, x + 1, y);
+            int s, t; cin>>s>>t;
+            ll x; cin>>x;
+            seg.update(s, t + 1, x);
         }
         else{
-            int x, y; cin>>x>>y;
-            cout << seg.query(x, y + 1) << endl;
+            int s, t; cin>>s>>t;
+            cout << seg.query(s, t + 1) << endl;
         }
     }
 

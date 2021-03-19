@@ -1,5 +1,5 @@
 const int MAX_N = ;
-mint fact[MAX_N], finv[MAX_N];
+mint fact[MAX_N];
 mint comb(int n, int r){
     if(n < r || r < 0) return 0;
     return fact[n] / fact[n - r] / fact[r];

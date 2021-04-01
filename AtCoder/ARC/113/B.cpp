@@ -42,38 +42,35 @@ constexpr long long INF = 1e18;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
+ll modpow(ll a, ll b, int m){
+    if(b == 0) return 1;
+    else if(b % 2 == 0){
+        ll d = modpow(a, b / 2, m) % m;
+        return d * d;
+    }
+    else{
+        return a * modpow(a, b - 1, m) % m;
+    }
+}
+
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n; cin>>n;
-    vector<int> l(n, inf + 1), r(n, -inf - 1);
-    for(int i=0; i<n; i++){
-        int x, c; cin>>x>>c; c--;
-        chmin(l[c], x);
-        chmax(r[c], x);
+    ll a, b, c; cin>>a>>b>>c;
+
+    a %= 10;
+    vector<int> v;
+    int cur = a;
+    while(count(all(v), cur) == 0){
+        v.emplace_back(cur);
+        cur *= a;
+        cur %= 10;
     }
 
-    vector<P> lr;
-    lr.emplace_back(0, 0);
-    for(int i=0; i<n; i++){
-        if(l[i] != inf + 1) lr.emplace_back(l[i], r[i]);
-    }
-    lr.emplace_back(0, 0);
+    int m = v.size();
 
-    vector<ll> dp(2, 0);
-    for(int i=1; i<lr.size(); i++){
-        vector<ll> ndp(2, INF);
-        int cl = lr[i].first, cr = lr[i].second;
-        for(int j=0; j<2; j++){
-            int pre = j ? lr[i - 1].second : lr[i - 1].first;
-            chmin(ndp[0], dp[j] + abs(pre - cr) + (cr - cl));
-            chmin(ndp[1], dp[j] + abs(pre - cl) + (cr - cl));
-        }
-        dp = ndp;
-    }
-
-    cout << dp[0] << endl;
+    cout << v[(modpow(b, c, m) + m - 1) % m] << endl;
 
     return 0;
 }

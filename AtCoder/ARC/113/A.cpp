@@ -46,34 +46,18 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n; cin>>n;
-    vector<int> l(n, inf + 1), r(n, -inf - 1);
-    for(int i=0; i<n; i++){
-        int x, c; cin>>x>>c; c--;
-        chmin(l[c], x);
-        chmax(r[c], x);
-    }
+    int k; cin>>k;
 
-    vector<P> lr;
-    lr.emplace_back(0, 0);
-    for(int i=0; i<n; i++){
-        if(l[i] != inf + 1) lr.emplace_back(l[i], r[i]);
-    }
-    lr.emplace_back(0, 0);
-
-    vector<ll> dp(2, 0);
-    for(int i=1; i<lr.size(); i++){
-        vector<ll> ndp(2, INF);
-        int cl = lr[i].first, cr = lr[i].second;
-        for(int j=0; j<2; j++){
-            int pre = j ? lr[i - 1].second : lr[i - 1].first;
-            chmin(ndp[0], dp[j] + abs(pre - cr) + (cr - cl));
-            chmin(ndp[1], dp[j] + abs(pre - cl) + (cr - cl));
+    ll ans = 0;
+    for(int a=1; a<=k; a++){
+        int ka = k / a;
+        for(int b=1; b<=ka; b++){
+            int kab = ka / b;
+            ans += kab;
         }
-        dp = ndp;
     }
 
-    cout << dp[0] << endl;
+    cout << ans << endl;
 
     return 0;
 }

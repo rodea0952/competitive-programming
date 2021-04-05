@@ -33,7 +33,7 @@ using T = tuple<int, int, int>;
 template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
 template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 
-constexpr int MOD = 1e9 + 7;
+constexpr int MOD = 998244353;
 constexpr int inf = 1e9;
 constexpr long long INF = 1e18;
 
@@ -41,45 +41,6 @@ constexpr long long INF = 1e18;
 
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
-
-template <typename X, typename M>
-class SegmentTree{
-    using FX = function<X(X, X)>;
-    using FA = function<X(X, M)>;
-    int n;
-    FX fx;
-    FA fa;
-    X ex;
-    vector<X> dat;
-
-public:
-    SegmentTree(vector<X> v, FX _fx, FA _fa, X _ex){
-        fx = _fx, fa = _fa, ex = _ex;
-        int sz = v.size();
-        n = 1; while(n < sz) n *= 2;
-        dat.resize(n*2, ex);
-        for(int i=0; i<sz; i++) dat[i+n-1] = v[i];
-        for(int i=n-2; i>=0; i--) dat[i] = fx(dat[i*2+1], dat[i*2+2]);
-    }
-
-    void update(int i, X val){
-        i += n - 1;
-        dat[i] = fa(dat[i], val);
-        while(i > 0){
-            i = (i - 1) / 2;
-            dat[i] = fx(dat[i*2+1], dat[i*2+2]);
-        }
-    }
-
-    X query(int a, int b, int k=0, int l=0, int r=-1){
-        if (r < 0) r = n;
-        if (r <= a || b <= l) return ex;
-        if (a <= l && r <= b) return dat[k];
-        X lv = query(a, b, k*2+1, l, (l+r)/2);
-        X rv = query(a, b, k*2+2, (l+r)/2, r);
-        return fx(lv, rv);
-    }
-};
 
 class mint{
 public:
@@ -145,33 +106,49 @@ mint modpow(mint a, ll b){
     }
 }
 
+const int MAX_N = 5010;
+mint fact[MAX_N];
+mint comb(int n, int r){
+    if(n < r || r < 0) return 0;
+    return fact[n] / fact[n - r] / fact[r];
+}
+
+mint perm(int n, int r){
+    if(n < r || r < 0) return 0;
+    return comb(n, r) * fact[r];
+} 
+
+void fact_init(int n){
+    fact[0] = 1;
+    for(int i=1; i<=n; i++){
+        fact[i] = fact[i - 1] * i;
+    }
+}
+
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n, k; cin>>n>>k;
-    vector<int> a(n);
-    for(int i=0; i<n; i++) cin>>a[i], a[i]--;
+    int n, m; cin>>n>>m;
 
-    using X = ll;
-    using M = ll;
-    vector<X> b(2000, 0), c(2000, 0);
-    auto fx = [](X x, X y) -> X {return x + y;};
-    auto fa = [](X x, M y) -> X {return x + y;};
-    X ex = 0;
-    SegmentTree<X, M> segb(b, fx, fa, ex), segc(c, fx, fa, ex);
-    mint bsum = 0, csum = 0;
-    for(int i=0; i<n; i++){
-        bsum += segb.query(a[i] + 1, 2000);
-        segb.update(a[i], 1);
-    }
-    for(int i=0; i<2*n; i++){
-        csum += segc.query(a[i % n] + 1, 2000);
-        segc.update(a[i % n], 1);
-    }
-    mint dsum = csum - bsum * 2;
+    fact_init(5005);
+    vector<mint> c(n + 1);
+    for(int i=0; i<=n; i++) c[i] = comb(n, i);
 
-    cout << bsum * k + dsum * k * (k - 1) / 2 << endl;
+    vector<vector<mint>> dp(20, vector<mint>(m + 1, 0));
+    dp[0][0] = 1;
+
+    for(int i=0; i<15; i++){
+        for(int j=0; j<=m; j++){
+            for(int k=0; k<=n; k+=2){
+                ll sum = j + (1LL << i) * k;
+                if(m < sum) continue;
+                dp[i + 1][sum] += dp[i][j] * c[k];
+            }
+        }
+    }
+
+    cout << dp[15][m] << endl;
 
     return 0;
 }

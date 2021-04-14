@@ -36,23 +36,11 @@ template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 constexpr int MOD = 1e9 + 7;
 constexpr int inf = 1e9;
 constexpr long long INF = 1e18;
-constexpr double pi = acos(-1);
-constexpr double EPS = 1e-10;
+
+#define all(a) (a).begin(), (a).end()
 
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
-
-vector<vector<ll>> warshall_floyd(int n, vector<vector<ll>> &dist){
-    for(int k=0; k<n; k++){
-        for(int i=0; i<n; i++){
-            for(int j=0; j<n; j++){
-                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
-            }
-        }
-    }
-
-    return dist;
-}
 
 int main(){
     cin.tie(0);
@@ -62,31 +50,38 @@ int main(){
     vector<vector<ll>> dist(n, vector<ll>(n, INF));
     for(int i=0; i<n; i++) dist[i][i] = 0;
     for(int i=0; i<m; i++){
-        int a, b, c; cin>>a>>b>>c;
-        a--, b--;
+        int a, b, c; cin>>a>>b>>c; a--, b--;
         dist[a][b] = dist[b][a] = c;
     }
 
-    auto dist1 = warshall_floyd(n, dist);
-
-    vector<vector<ll>> dist2(n, vector<ll>(n, INF));
-    for(int i=0; i<n; i++) dist2[i][i] = 0;
-    for(int i=0; i<n; i++){
-        for(int j=i+1; j<n; j++){
-            if(dist1[i][j] <= l){
-                dist2[i][j] = dist2[j][i] = 1;
+    for(int k=0; k<n; k++){
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
             }
         }
     }
 
-    auto fidist = warshall_floyd(n, dist2);
+    vector<vector<ll>> pass(n, vector<ll>(n, INF));
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            if(dist[i][j] <= l) pass[i][j] = 1;
+        }
+    }
+
+    for(int k=0; k<n; k++){
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                pass[i][j] = min(pass[i][j], pass[i][k] + pass[k][j]);
+            }
+        }
+    }
 
     int q; cin>>q;
     while(q--){
-        int s, t; cin>>s>>t;
-        s--, t--;
-        if(fidist[s][t] == INF) cout << -1 << endl;
-        else cout << fidist[s][t] - 1 << endl;
+        int s, t; cin>>s>>t; s--, t--;
+        if(pass[s][t] == INF) cout << -1 << endl;
+        else cout << pass[s][t] - 1 << endl;
     }
 
     return 0;

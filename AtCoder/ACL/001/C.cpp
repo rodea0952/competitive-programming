@@ -1,3 +1,47 @@
+#pragma GCC optimize("O3")
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <string>
+#include <cstring>
+#include <deque>
+#include <list>
+#include <queue>
+#include <stack>
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <map>
+#include <set>
+#include <complex>
+#include <cmath>
+#include <limits>
+#include <cfloat>
+#include <climits>
+#include <ctime>
+#include <cassert>
+#include <numeric>
+#include <fstream>
+#include <functional>
+#include <bitset>
+using namespace std;
+
+using ll = long long;
+using P = pair<int, int>;
+using T = tuple<int, int, int>;
+
+template <class T> inline T chmax(T &a, const T b) {return a = (a < b) ? b : a;}
+template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
+
+constexpr int MOD = 1e9 + 7;
+constexpr int inf = 1e9;
+constexpr long long INF = 1e18;
+
+#define all(a) (a).begin(), (a).end()
+
+int dx[] = {1, 0, -1, 0};
+int dy[] = {0, 1, 0, -1};
+
 template <typename flow_t, typename cost_t>
 struct PrimalDual{
     const cost_t INF;
@@ -82,3 +126,68 @@ struct PrimalDual{
         }
     }
 };
+
+int main(){
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+
+    int n, m; cin>>n>>m;
+    vector<string> s(n);
+    for(int i=0; i<n; i++) cin>>s[i];
+
+    map<P, int> piece;
+    int idx = 0;
+    for(int i=0; i<n; i++){
+        for(int j=0; j<m; j++){
+            if(s[i][j] == 'o'){
+                piece[P(i, j)] = idx++;
+            }
+        }
+    }
+
+    int L = piece.size(), R = n * m;
+    vector<vector<int>> dist(L, vector<int>(R, -1));
+    for(auto cp : piece){
+        int i = cp.second;
+        int y = cp.first.first, x = cp.first.second;
+        queue<P> que;
+        que.emplace(y, x);
+        vector<vector<int>> dp(n, vector<int>(m, -1));
+        dp[y][x] = 0;
+        while(que.size()){
+            int cy, cx; tie(cy, cx) = que.front(); que.pop();
+            for(int j=0; j<2; j++){
+                int ny = cy + dy[j], nx = cx + dx[j];
+                if(!(ny < n && nx < m)) continue;
+                if(s[ny][nx] == '#') continue;
+                if(dp[ny][nx] != -1) continue;
+                dp[ny][nx] = dp[cy][cx] + 1;
+                que.emplace(ny, nx);
+            }
+        }
+
+        for(int h=0; h<n; h++){
+            for(int w=0; w<m; w++){
+                dist[i][h * m + w] = dp[h][w];
+            }
+        }
+    }
+
+    PrimalDual<int, int> G(L + R + 2);
+    int st = L + R, gl = L + R + 1;
+    for(int l=0; l<L; l++) G.add_edge(st, l, 1, 0);
+    for(int r=0; r<R; r++) G.add_edge(L + r, gl, 1, 0);
+
+    for(int l=0; l<L; l++){
+        for(int r=0; r<R; r++){
+            if(dist[l][r] == -1) continue;
+            G.add_edge(l, L + r, 1, -dist[l][r]);
+        }
+    }
+
+    int ans = G.min_cost_flow(st, gl, L);
+
+    cout << -ans << endl;
+
+    return 0;
+}

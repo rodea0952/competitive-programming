@@ -1,5 +1,4 @@
-class LCA{
-public:
+struct LCA{
     static const int MAX_LOG_V = 30;
     vector<int> parent[MAX_LOG_V]; // 親を2^k回辿って到達する頂点（根を通り過ぎる場合は-1）
     vector<int> depth;

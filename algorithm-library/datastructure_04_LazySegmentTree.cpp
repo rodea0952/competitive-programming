@@ -49,7 +49,7 @@ LazySegmentTree<X, M> seg(a, fx, fa, fm, fp, ex, em);
 */
 
 template <typename X, typename M>
-class LazySegmentTree{
+struct LazySegmentTree{
     using FX = function<X(X, X)>;
     using FA = function<X(X, M)>;
     using FM = function<M(M, M)>;
@@ -64,7 +64,6 @@ class LazySegmentTree{
     vector<X> dat;
     vector<M> lazy;
 
-public:
     LazySegmentTree(vector<X> v, FX _fx, FA _fa, FM _fm, FP _fp, X _ex, M _em){
         fx = _fx, fa = _fa, fm = _fm, fp = _fp, ex = _ex, em = _em;
         int sz = v.size();

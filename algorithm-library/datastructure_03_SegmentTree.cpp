@@ -19,7 +19,7 @@ SegmentTree<X, M> seg(a, fx, fa, ex);
 */
 
 template <typename X, typename M>
-class SegmentTree{
+struct SegmentTree{
     using FX = function<X(X, X)>;
     using FA = function<X(X, M)>;
     int n;
@@ -28,7 +28,6 @@ class SegmentTree{
     X ex;
     vector<X> dat;
 
-public:
     SegmentTree(vector<X> v, FX _fx, FA _fa, X _ex){
         fx = _fx, fa = _fa, ex = _ex;
         int sz = v.size();

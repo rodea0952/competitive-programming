@@ -36,8 +36,8 @@ template <class T> inline T chmin(T &a, const T b) {return a = (a > b) ? b : a;}
 constexpr int MOD = 1e9 + 7;
 constexpr int inf = 1e9;
 constexpr long long INF = 1e18;
-constexpr double pi = acos(-1);
-constexpr double EPS = 1e-10;
+
+#define all(a) (a).begin(), (a).end()
 
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
@@ -46,30 +46,32 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int n; cin>>n;
-    ll m; cin>>m;
+    int n, m; cin>>n>>m;
     vector<ll> a(n);
-    for(int i=0; i<n; i++) cin>>a[i];
+    for(int i=0; i<n; i++) cin>>a[i], a[i] /= 2;
 
-    ll l = 1;
+    set<int> div2_cnt;
     for(int i=0; i<n; i++){
-        a[i] /= 2;
-        l = (l / __gcd(l, a[i]) * a[i]);
+        int cur = a[i], cnt = 0;
+        while(cur % 2 == 0) cur /= 2, cnt++;
+        div2_cnt.emplace(cnt);
+    }
+
+    if(div2_cnt.size() != 1){
+        cout << 0 << endl;
+        return 0;
+    }
+
+    ll l = a[0];
+    for(int i=1; i<n; i++){
+        l = l * a[i] / __gcd(l, a[i]);
         if(m < l){
             cout << 0 << endl;
             return 0;
         }
     }
 
-    for(int i=0; i<n; i++){
-        ll div = l / a[i];
-        if(div % 2 == 0){
-            cout << 0 << endl;
-            return 0;
-        }
-    }
-
-    cout << (m / l - m / (2 * l)) << endl;
+    cout << (m / l + 1) / 2 << endl;
 
     return 0;
 }

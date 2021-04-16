@@ -62,16 +62,17 @@ int main(){
     ios::sync_with_stdio(false);
 
     ll n; cin>>n;
-    
-    int ans = divisor(n - 1).size() - 1;
 
+    int ans = divisor(n - 1).size();
+    
     for(ll i=2; i*i<=n; i++){
-        ll num = n;
-        while(num % i == 0) num /= i;
-        if(num % i == 1 && num != n) ans++;
+        ll cur = n;
+        if(cur % i != 0) continue;
+        while(cur % i == 0) cur /= i;
+        ans += (cur % i == 1);
     }
 
-    cout << ans + 1 << endl;
+    cout << ans << endl;
 
     return 0;
 }

@@ -42,34 +42,86 @@ constexpr long long INF = 1e18;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
-ll modpow(ll a, ll b){
+class mint{
+public:
+    ll x;
+    constexpr mint(long long x = 0) : x((x % MOD + MOD) % MOD) {}
+    constexpr mint operator-() const{
+        return mint(-x);
+    }
+    constexpr mint& operator+=(const mint& a){
+        if ((x += a.x) >= MOD) x -= MOD;
+        return *this;
+    }
+    constexpr mint& operator-=(const mint& a){
+        if ((x += MOD - a.x) >= MOD) x -= MOD;
+        return *this;
+    }
+    constexpr mint& operator*=(const mint& a){
+        (x *= a.x) %= MOD;
+        return *this;
+    }
+    constexpr mint operator+(const mint& a) const{
+        mint res(*this);
+        return res += a;
+    }
+    constexpr mint operator-(const mint& a) const{
+        mint res(*this);
+        return res -= a;
+    }
+    constexpr mint operator*(const mint& a) const{
+        mint res(*this);
+        return res *= a;
+    }
+    constexpr mint pow(ll t) const{
+        if (!t) return 1;
+        mint a = pow(t >> 1);
+        a *= a;
+        if (t & 1) a *= *this;
+        return a;
+    }
+    // for prime MOD
+    constexpr mint inv() const{
+        return pow(MOD - 2);
+    }
+    constexpr mint& operator/=(const mint& a){
+        return (*this) *= a.inv();
+    }
+    constexpr mint operator/(const mint& a) const{
+        mint res(*this);
+        return res /= a;
+    }
+};
+istream& operator>>(istream& is, mint& a) {return is >> a.x;}
+ostream& operator<<(ostream& os, const mint& a) {return os << a.x;}
+
+mint modpow(mint a, ll b){
     if(b == 0) return 1;
     else if(b % 2 == 0){
-        ll d = modpow(a, b / 2) % MOD;
-        return (d * d) % MOD;
+        mint d = modpow(a, b / 2);
+        return d * d;
     }
     else{
-        return (a * modpow(a, b - 1)) % MOD;
+        return a * modpow(a, b - 1);
     }
 }
 
 const int MAX_N = 500010;
-ll fact[MAX_N], finv[MAX_N];
-ll comb(int n, int r){
+mint fact[MAX_N];
+mint comb(int n, int r){
     if(n < r || r < 0) return 0;
-    return fact[n] * finv[n-r] % MOD * finv[r] % MOD;
+    return fact[n] / fact[n - r] / fact[r];
 }
 
-ll perm(int n, int r){
+mint perm(int n, int r){
     if(n < r || r < 0) return 0;
-    return comb(n, r) * fact[r] % MOD;
+    return comb(n, r) * fact[r];
 } 
 
-void comb_init(int n){
-    fact[0] = finv[0] = 1;
+void fact_init(int n){
+    fact[0] = 1;
     for(int i=1; i<=n; i++){
-        fact[i] = (fact[i-1] * i) % MOD;
-        finv[i] = modpow(fact[i], MOD - 2);
+        fact[i] = fact[i - 1] * i;
     }
 }
 
@@ -77,22 +129,23 @@ int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
+    fact_init(500005);
+
     int n, m; cin>>n>>m;
 
-    comb_init(m + 5);
-
-    ll ans = 0;
+    mint ans = 0;
+    // i = P_i が少なくとも i 箇所ある
+    // 包除原理で N まで求める
     for(int i=0; i<=n; i++){
-        ll cur = comb(n, i);
-        cur *= perm(m - i, n - i);
-        cur %= MOD;
-        if(i & 1) cur = -cur;
+        // N 箇所から i 箇所選ぶ
+        // i 箇所で決めた数値以外（M - i 通り）で残り N - i 箇所を埋める
+        mint cur = comb(n, i) * perm(m - i, n - i);
+        if(i % 2) cur = -cur;
         ans += cur;
-        ans = (ans + MOD) % MOD;
     }
 
+    // 数列 A の決め方
     ans *= perm(m, n);
-    ans %= MOD;
 
     cout << ans << endl;
 

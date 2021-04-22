@@ -42,25 +42,18 @@ constexpr long long INF = 1e18;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
-vector<int> a(200010);
-vector<int> ans(200010);
-vector<int> dp(200010, inf);
-
-void dfs(int cv, int pv, vector<vector<int>> &G){
+vector<int> ans(200010, -1);
+vector<int> dp(200010, inf + 10);
+void dfs(int cv, int pv, vector<int> &a, vector<vector<int>> &G){
     int idx = lower_bound(dp.begin(), dp.end(), a[cv]) - dp.begin();
     int pre = dp[idx];
     dp[idx] = a[cv];
-
-    ans[cv] = lower_bound(dp.begin(), dp.end(), inf) - dp.begin();
-    
+    ans[cv] = lower_bound(dp.begin(), dp.end(), inf + 10) - dp.begin();
     for(auto nv : G[cv]){
         if(nv == pv) continue;
-
-        dfs(nv, cv, G);
+        dfs(nv, cv, a, G);
     }
-
     dp[idx] = pre;
-
     return ;
 }
 
@@ -69,18 +62,20 @@ int main(){
     ios::sync_with_stdio(false);
 
     int n; cin>>n;
+    vector<int> a(n);
     for(int i=0; i<n; i++) cin>>a[i];
     vector<vector<int>> G(n);
     for(int i=0; i<n-1; i++){
-        int u, v; cin>>u>>v;
-        u--, v--;
+        int u, v; cin>>u>>v; u--, v--;
         G[u].emplace_back(v);
         G[v].emplace_back(u);
     }
 
-    dfs(0, -1, G);
+    dfs(0, -1, a, G);
 
-    for(int i=0; i<n; i++) cout << ans[i] << endl;
+    for(int i=0; i<n; i++){
+        cout << ans[i] << endl;
+    }
 
     return 0;
 }

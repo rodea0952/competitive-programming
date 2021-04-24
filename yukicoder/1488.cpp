@@ -42,25 +42,46 @@ constexpr long long INF = 1e18;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
-double dp[101][101][101];
+vector<int> value(110, 1);
+vector<int> children_cnt(110, 0);
+void dfs(int cv, int pv, vector<vector<T>> &G){
+    for(auto nxt : G[cv]){
+        int nv, cost, idx; tie(nv, cost, idx) = nxt;
+        if(nv == pv) continue;
+        dfs(nv, cv, G);
+        children_cnt[cv] += children_cnt[nv];
+        value[idx] = children_cnt[nv];
+    }
+    if(children_cnt[cv] == 0) children_cnt[cv] = 1;
+    return ;
+}
 
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    int a, b, c; cin>>a>>b>>c;
+    int n, k; cin>>n>>k;
+    vector<int> a(n-1), b(n-1), c(n-1);
+    vector<vector<T>> G(n);
+    for(int i=0; i<n-1; i++){
+        cin>>a[i]>>b[i]>>c[i]; a[i]--, b[i]--;
+        G[a[i]].emplace_back(b[i], c[i], i);
+        G[b[i]].emplace_back(a[i], c[i], i);
+    }
 
-    for(int i=99; i>=a; i--){
-        for(int j=99; j>=b; j--){
-            for(int k=99; k>=c; k--){
-                dp[i][j][k] += (dp[i + 1][j][k] + 1) * i / (i + j + k);
-                dp[i][j][k] += (dp[i][j + 1][k] + 1) * j / (i + j + k);
-                dp[i][j][k] += (dp[i][j][k + 1] + 1) * k / (i + j + k);
-            }
+    dfs(0, -1, G);
+
+    for(int i=0; i<n-1; i++) value[i] *= c[i];
+    vector<int> dp(k + 1, 0);
+    for(int i=0; i<n-1; i++){
+        for(int j=k-c[i]; j>=0; j--){
+            chmax(dp[c[i] + j], dp[j] + value[i]);
         }
     }
 
-    printf("%.10f\n", dp[a][b][c]);
+    ll ans = dp[k];
+    for(int i=0; i<n-1; i++) ans += value[i];
+    cout << ans << endl;
 
     return 0;
 }

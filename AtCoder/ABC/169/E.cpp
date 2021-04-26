@@ -53,14 +53,14 @@ int main(){
     sort(all(a));
     sort(all(b));
 
-    int amid, bmid;
+    int amid = 0, bmid = 0;
     if(n % 2 == 0){
-        amid = a[n/2-1] + a[n/2];
-        bmid = b[n/2-1] + b[n/2];
+        amid = a[n / 2] + a[n / 2 - 1];
+        bmid = b[n / 2] + b[n / 2 - 1];
     }
     else{
-        amid = a[n/2];
-        bmid = b[n/2];
+        amid = a[n / 2];
+        bmid = b[n / 2];
     }
 
     cout << bmid - amid + 1 << endl;

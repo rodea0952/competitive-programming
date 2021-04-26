@@ -48,28 +48,30 @@ int main(){
 
     int n, m; cin>>n>>m;
 
-    int head = 2, tail = n;
+    // 参加者で円を作り、対戦を線で表す
     vector<P> ans;
-    if(n % 2 == 1){
-        for(int i=0; i<m; i++){
-            ans.emplace_back(head, tail);
-            head++, tail--;
+    if(n % 2){
+        for(int i=1; i<=m; i++){
+            ans.emplace_back(i, n - i);
         }
     }
     else{
-        set<int> length;
-        for(int i=0; i<m; i++){
-            int over = (n - tail) + head, under = tail - head;
-            if(over == under || length.count(over) || length.count(under)) tail--;
-
-            ans.emplace_back(head, tail);
-            length.emplace(over);
-            length.emplace(under);
-            head++, tail--;
+        // 1, ..., n / 2 で差が奇数の線を引く
+        int half = n / 2;
+        int hl = half / 2, hr = half / 2 + 1;
+        for(int i=0; hl-i!=0; i++){
+            ans.emplace_back(hl - i, hr + i);
+        }
+        // n / 2 + 1, ..., n で差が偶数の線を引く
+        int tl = half + half / 2, tr = half + half / 2 + 2;
+        for(int i=0; tr+i<=n; i++){
+            ans.emplace_back(tl - i, tr + i);
         }
     }
 
-    for(auto i : ans) cout << i.first << " " << i.second << endl;
+    for(int i=0; i<m; i++){
+        cout << ans[i].first << " " << ans[i].second << endl;
+    }
 
     return 0;
 }

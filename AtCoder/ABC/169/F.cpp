@@ -42,6 +42,69 @@ constexpr long long INF = 1e18;
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
+struct mint{
+    ll x;
+    constexpr mint(long long x = 0) : x((x % MOD + MOD) % MOD) {}
+    constexpr mint operator-() const{
+        return mint(-x);
+    }
+    constexpr mint& operator+=(const mint& a){
+        if ((x += a.x) >= MOD) x -= MOD;
+        return *this;
+    }
+    constexpr mint& operator-=(const mint& a){
+        if ((x += MOD - a.x) >= MOD) x -= MOD;
+        return *this;
+    }
+    constexpr mint& operator*=(const mint& a){
+        (x *= a.x) %= MOD;
+        return *this;
+    }
+    constexpr mint operator+(const mint& a) const{
+        mint res(*this);
+        return res += a;
+    }
+    constexpr mint operator-(const mint& a) const{
+        mint res(*this);
+        return res -= a;
+    }
+    constexpr mint operator*(const mint& a) const{
+        mint res(*this);
+        return res *= a;
+    }
+    constexpr mint pow(ll t) const{
+        if (!t) return 1;
+        mint a = pow(t >> 1);
+        a *= a;
+        if (t & 1) a *= *this;
+        return a;
+    }
+    // for prime MOD
+    constexpr mint inv() const{
+        return pow(MOD - 2);
+    }
+    constexpr mint& operator/=(const mint& a){
+        return (*this) *= a.inv();
+    }
+    constexpr mint operator/(const mint& a) const{
+        mint res(*this);
+        return res /= a;
+    }
+};
+istream& operator>>(istream& is, mint& a) {return is >> a.x;}
+ostream& operator<<(ostream& os, const mint& a) {return os << a.x;}
+
+mint modpow(mint a, ll b){
+    if(b == 0) return 1;
+    else if(b % 2 == 0){
+        mint d = modpow(a, b / 2);
+        return d * d;
+    }
+    else{
+        return a * modpow(a, b - 1);
+    }
+}
+
 int main(){
     cin.tie(0);
     ios::sync_with_stdio(false);
@@ -50,18 +113,12 @@ int main(){
     vector<int> a(n);
     for(int i=0; i<n; i++) cin>>a[i];
 
-    vector<vector<ll>> dp(n + 1, vector<ll>(s + 1, 0));
-    dp[0][0] = 1;
-
+    vector<vector<mint>> dp(n + 1, vector<mint>(s + 1, 0));
+    dp[0][0] = 1; 
     for(int i=0; i<n; i++){
         for(int j=0; j<=s; j++){
             dp[i + 1][j] += dp[i][j] * 2;
-            dp[i + 1][j] %= MOD;
-
-            if(j + a[i] <= s){
-                dp[i + 1][j + a[i]] += dp[i][j];
-                dp[i + 1][j + a[i]] %= MOD;
-            }
+            if(j + a[i] <= s) dp[i + 1][j + a[i]] += dp[i][j];
         }
     }
 

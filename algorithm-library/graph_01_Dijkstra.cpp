@@ -11,7 +11,6 @@ vector<ll> dijkstra(int s, vector<vector<pair<int, ll>>> &G){
 
         for(auto nxt : G[cv]){
             int nv; ll ncost; tie(nv, ncost) = nxt;
-            
             if(ccost + ncost < dist[nv]){
                 dist[nv] = ccost + ncost;
                 que.emplace(dist[nv], nv);

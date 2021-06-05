@@ -1,5 +1,4 @@
-class UnionFind{
-public:
+struct UnionFind{
     vector<int> par;
     vector<int> rank;
     vector<int> sz;

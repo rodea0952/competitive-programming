@@ -1,5 +1,4 @@
-class UnionFind{
-public:
+struct UnionFind{
     vector<int> par;
     vector<int> rank;
     vector<int> sz;
@@ -43,13 +42,12 @@ public:
     }
 };
 
-int kruskal(int n, vector<T> &edge){
+ll kruskal(int n, vector<T> &edge){
     sort(edge.begin(), edge.end());
     UnionFind uf(n);
-    int res = 0;
-    for(int i=0; i<edge.size(); i++){
-        int cost, cv, nv;
-        tie(cost, cv, nv) = edge[i];
+    ll res = 0;
+    for(auto i : edge){
+        ll cost; int cv, nv; tie(cost, cv, nv) = i;
         if(!uf.same(cv, nv)){
             uf.unite(cv, nv);
             res += cost;

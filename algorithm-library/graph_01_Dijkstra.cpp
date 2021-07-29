@@ -1,8 +1,8 @@
-vector<ll> dijkstra(int s, vector<vector<pair<int, ll>>> &G){
+vector<ll> dijkstra(int s, vector<vector<P>> &G){
     int n = G.size();
     vector<ll> dist(n, INF);
     dist[s] = 0;
-    priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>> que;
+    priority_queue<P, vector<P>, greater<P>> que;
     que.emplace(0, s);
 
     while(que.size()){

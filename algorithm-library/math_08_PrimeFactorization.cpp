@@ -1,16 +1,16 @@
 vector<ll> prime_factorization(ll n){
-    vector<ll> v;
+    vector<ll> res;
     ll num = n;
     for(ll i=2; i*i<=n; i++){
         while(num % i == 0){
             num /= i;
-            v.emplace_back(i);
+            res.emplace_back(i);
         }
     }
 
     if(num != 1){
-        v.emplace_back(num);
+        res.emplace_back(num);
     }
 
-    return v;
+    return res;
 }
